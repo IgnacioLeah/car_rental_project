@@ -1,401 +1,278 @@
+<?php 
+session_start();
+require_once('connection.php');
+
+/* 🔐 PROTECT PAGE */
+if(!isset($_SESSION['email'])){
+    header("Location: index.php");
+    exit();
+}
+
+/* GET CAR ID */
+if(!isset($_GET['id'])){
+    header("Location: cardetails.php");
+    exit();
+}
+
+$carid = $_GET['id'];
+
+/* GET CAR INFO */
+$sql = "SELECT * FROM cars WHERE CAR_ID='$carid'";
+$cname = mysqli_query($con,$sql);
+$email = mysqli_fetch_assoc($cname);
+
+/* GET USER INFO */
+$value = $_SESSION['email'];
+$sql = "SELECT * FROM users WHERE EMAIL='$value'";
+$name = mysqli_query($con,$sql);
+$rows = mysqli_fetch_assoc($name);
+
+$uemail = $rows['EMAIL'];
+$carprice = $email['PRICE'];
+
+/* BOOKING PROCESS */
+if(isset($_POST['book'])){
+    $bplace = $_POST['place'];
+    $bdate = date('Y-m-d',strtotime($_POST['date']));
+    $dur = $_POST['dur'];
+    $phno = $_POST['ph'];
+    $des = $_POST['des'];
+    $rdate = date('Y-m-d',strtotime($_POST['rdate']));
+
+    if($bdate < $rdate){
+
+        $price = ($dur * $carprice);
+
+        $sql = "INSERT INTO booking 
+        (CAR_ID,EMAIL,BOOK_PLACE,BOOK_DATE,DURATION,PHONE_NUMBER,DESTINATION,PRICE,RETURN_DATE) 
+        VALUES ('$carid','$uemail','$bplace','$bdate','$dur','$phno','$des','$price','$rdate')";
+
+        mysqli_query($con,$sql);
+
+        header("Location: payment.php");
+        exit();
+
+    } else {
+        echo "<script>alert('Invalid return date');</script>";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAR BOOKING</title>
-    <!-- <link  rel="stylesheet" href=""> -->
-    <script type="text/javascript">
-        function preventBack() {
-            window.history.forward(); 
-        }
-          
-        setTimeout("preventBack()", 0);
-          
-        window.onunload = function () { null };
-    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Car Booking</title>
 
-
-
-</head>
-<body  background=images/book.jpg>
 <style>
+/* ✅ YOUR ORIGINAL DESIGN */
 *{
-    margin: 0;
-    padding: 0;
-
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
 }
 
-div.main{
-    width: 400px;
-    margin: 100px auto 0px auto;
-}
-.btnn{
-    width: 240px;
-    height: 40px;
-    background: #ff7200;
-    border:none;
-    margin-top: 30px;
-    margin-left: 30px;
-    font-size: 18px;
-    border-radius: 10px;
-    cursor: pointer;
-    color:#fff;
-    transition: 0.4s ease;
+body{
+    min-height:100vh;
+    background:url("images/book.jpg") no-repeat center center fixed;
+    background-size:cover;
+    position:relative;
 }
 
-.btnn:hover{
-    background: #fff;
-    color:#ff7200;
+body::before{
+    content:'';
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.75);
+    z-index:-1;
 }
 
-.btnn a{
-    text-decoration: none;
-    color: black;
-    font-weight: bold;
-}
-
-h2{
-    text-align: center;
-    padding: 20px;
-    font-family: sans-serif;
-
-}
-div.register{
-    background-color: rgba(0,0,0,0.6);
-    width: 100%;
-    font-size: 18px;
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.3);
-    box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
-    color: #fff;
-
-}
-
-form#register{
-    margin: 40px;
-
-}
-
-label{
-    font-family: sans-serif;
-    font-size: 18px;
-    font-style: italic;
-}
-
-input#name{
-    width:300px;
-    border:1px solid #ddd;
-    border-radius: 3px;
-    outline: 0;
-    padding: 7px;
-    background-color: #fff;
-    box-shadow:inset 1px 1px 5px rgba(0,0,0,0.3);
-}
-
-input#dfield{
-    width:300px;
-    border:1px solid #ddd;
-    border-radius: 3px;
-    outline: 0;
-    padding: 7px;
-    background-color: #fff;
-    box-shadow:inset 1px 1px 5px rgba(0,0,0,0.3);
-}
-
-input#datefield{
-    width:300px;
-    border:1px solid #ddd;
-    border-radius: 3px;
-    outline: 0;
-    padding: 7px;
-    background-color: #fff;
-    box-shadow:inset 1px 1px 5px rgba(0,0,0,0.3);
-}
-
-*{
-    margin: 0;
-    padding: 0;
-
-}
-.hai{
-    width: 100%;
-    height: 0px;
-    
-    
-}
-.main{
-    width: 100%;
-    background: linear-gradient(to top, rgba(0,0,0,0)50%, rgba(0,0,0,0)50%);
-    background-position: center;
-    background-size: cover;
-    
-  
-}
 .navbar{
-    width: 1200px;
-    height: 75px;
-    margin: auto;
-}
-
-.icon{
-    width:200px;
-    float: left;
-    height : 70px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 50px;
+    background:rgba(0,0,0,0.7);
 }
 
 .logo{
-    color: #ff7200;
-    font-size: 35px;
-    font-family: Arial;
-    padding-left: 20px;
-    float:left;
-    padding-top: 10px;
-
-}
-.menu{
-    width: 400px;
-    float: left;
-    height: 70px;
-
+    color:#ff7200;
+    font-size:28px;
+    font-weight:bold;
 }
 
-ul{
-    float: left;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: black;
+.menu ul{
+    display:flex;
+    gap:25px;
+    list-style:none;
 }
 
-ul li{
-    list-style: none;
-    margin-left: 80px;
-    margin-top: 20px;
-    font-size: 14px;
-    color: black;
-
+.menu a{
+    color:#fff;
+    text-decoration:none;
+    font-weight:bold;
 }
 
-ul li a{
-    text-decoration: none;
-    color:white;
-    font-family: Arial;
-    font-weight: bold;
-    transition: 0.4s ease-in-out;
-
-}
-
-ul li a:hover{
-    color:orange;
-
-}
-
-.nn{
-    width:100px;
-    background: #ff7200;
-
-    border:none;
-    height: 40px;
-    font-size: 18px;
-    border-radius: 10px;
-    cursor: pointer;
-    color:white;
-    transition: 0.4s ease;
-    
-
-}
-
-.nn a{
-    text-decoration: none;
-    color: black;
-    font-weight: bold;
-    
+.menu a:hover{
+    color:#ff7200;
 }
 
 .circle{
-    border-radius:48%;
-    width:65px;
+    width:40px;
+    border-radius:50%;
 }
 
-.phello{
-    width: 200px;
-    margin-left: -50px;
-    padding: 0px;
+.container{
+    width:900px;
+    margin:40px auto;
+    background:rgba(0,0,0,0.65);
+    backdrop-filter:blur(12px);
+    border-radius:15px;
+    padding:30px;
+    color:#fff;
 }
 
+.car-preview{
+    text-align:center;
+    margin-bottom:20px;
+}
 
+.car-preview img{
+    width:240px;
+    height:150px;
+    object-fit:cover;
+    border-radius:10px;
+}
 
+.container h1{
+    text-align:center;
+    margin-bottom:25px;
+    color:#ff7200;
+}
 
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.full{
+    grid-column:span 2;
+}
+
+label{
+    margin-bottom:5px;
+    font-size:14px;
+    color:#ccc;
+}
+
+input{
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:rgba(255,255,255,0.1);
+    color:#fff;
+}
+
+.btn{
+    width:100%;
+    padding:12px;
+    background:#ff7200;
+    border:none;
+    border-radius:8px;
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+}
 </style>
+</head>
 
+<body>
 
-<?php 
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">CaRs</div>
 
-    require_once('connection.php');
-    session_start();
- 
-    $carid=$_GET['id'];
-    
-    $sql="select *from cars where CAR_ID='$carid'";
-    $cname = mysqli_query($con,$sql);
-    $email = mysqli_fetch_assoc($cname);
-    
-    $value = $_SESSION['email'];
-    $sql="select * from users where EMAIL='$value'";
-    $name = mysqli_query($con,$sql);
-    $rows=mysqli_fetch_assoc($name);
-    $uemail=$rows['EMAIL'];
-    $carprice=$email['PRICE'];
-    if(isset($_POST['book'])){
-       
-        $bplace=mysqli_real_escape_string($con,$_POST['place']);
-        $bdate=date('Y-m-d',strtotime($_POST['date']));;
-        $dur=mysqli_real_escape_string($con,$_POST['dur']);
-        $phno=mysqli_real_escape_string($con,$_POST['ph']);
-        $des=mysqli_real_escape_string($con,$_POST['des']);
-        $rdate=date('Y-m-d',strtotime($_POST['rdate']));
-         
-        if(empty($bplace)|| empty($bdate)|| empty($dur)|| empty($phno)|| empty($des)|| empty($rdate)){
-            echo '<script>alert("please fill the place")</script>';
-
-        }
-        else{
-            if($bdate<$rdate){
-            $price=($dur*$carprice);
-            $sql="insert into booking (CAR_ID,EMAIL,BOOK_PLACE,BOOK_DATE,DURATION,PHONE_NUMBER,DESTINATION,PRICE,RETURN_DATE) values($carid,'$uemail','$bplace','$bdate',$dur,$phno,'$des',$price,'$rdate')";
-            $result = mysqli_query($con,$sql);
-            
-            if($result){
-                
-                $_SESSION['email'] =$uemail;
-                header("Location: payment.php");
-            }
-            else{
-                echo '<script>alert("please check the connection")</script>';
-            }
-        }
-        else{
-            echo  '<script>alert("please enter a correct rturn date")</script>';
-        }
-    
-        }
-    }
-    
-    ?>
-
-
-
-    
-       <div class="hai">
-            <div class="navbar">
-                <div class="icon">
-                    <h2 class="logo">CaRs</h2>
-                </div>
-                <div class="menu" >
-                    <ul>
-                        <li ><a href="cardetails.php">HOME</a></li>
-                        <li><a href="aboutus2.html">ABOUT</a></li>
-                        <li><a href="#">DESIGN</a></li>
-                        <li><a href="contactus2.html">CONTACT</a></li>
-                        <li><button class="nn"><a href="index.html">LOGOUT</a></button></li>
-                        <li><img src="images/profile.png" class="circle" alt="Alps"></li>
-                    <li><p class="phello">HELLO! &nbsp;<a id="pname"><?php echo $rows['FNAME']." ".$rows['LNAME']?></a></p></li>
-
-                    
-                    </ul>
-                </div>
-            </div>
-       </div>
-                
-                
-         <div class="main"> 
-        
-        <div class="register">
-            <h2>BOOKING</h2>
-        <form id="register" method="POST"  >
-            <h2>CAR NAME : <?php echo "".$email['CAR_NAME']?></h2>
-            <label>BOOKING PLACE : </label>
-            <br>
-            <input type="text" name="place"
-            id="name" placeholder="Enter Your Destination">
-            <br><br>
-
-            <label>BOOKING DATE : </label>
-            <br>
-            <input type ="date" name="date"
-            id="datefield" min='1899-01-01' max='2000-13-13'  placeholder="ENTER THE DATE FOR BOOKING">
-            <br><br>
-
-            <label>DURATION : </label>
-            <br>
-            <input type ="number" name="dur" min="1" max="30" 
-            id="name" placeholder="Enter Rent Period (in days)">
-            <br><br>
-
-            <label>PHONE NUMBER : </label>
-            <br>
-            <input type="tel" name="ph" maxlength="10"
-            id="name" placeholder="Enter Your Phone Number">
-            <br><br>
-            
-            <label>DESTINATION : </label>
-            <br>
-            <input type="text" name="des"
-            id="name" placeholder="Enter Your Destination">
-            <br><br>
-
-            <label>Return date : </label>
-            <br>
-            <input type ="date" name="rdate"
-            id="dfield"  min='1899-01-01' placeholder="Enter The Return Date">
-            <br><br>
-            <input type="submit"  class="btnn" value="BOOK" name="book" >
-            
-        </form>
-        </div>
+    <div class="menu">
+        <ul>
+            <li><a href="cardetails.php">Home</a></li>
+            <li><a href="bookinstatus.php">Status</a></li>
+        </ul>
     </div>
-    
-    <script>
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth() + 1; //January is 0!
-        var yyyy = today.getFullYear();
-        if (dd < 10) {
-             dd = '0' + dd
-        }
-        if (mm < 10) {
-              mm = '0' + mm
-        }
 
-        today = yyyy + '-' + mm + '-' + dd;
-        document.getElementById("datefield").setAttribute("min", today);
-        document.getElementById("datefield").setAttribute("max", today);
+    <img src="images/profile.png" class="circle">
+</div>
 
+<!-- FORM -->
+<div class="container">
 
-    </script>
-    <script>
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth() + 1; //January is 0!
-        var yyyy = today.getFullYear();
-        if (dd < 10) {
-             dd = '0' + dd
-        }
-        if (mm < 10) {
-              mm = '0' + mm
-        }
+<div class="car-preview">
+<?php 
+$image = !empty($email['CAR_IMG']) ? $email['CAR_IMG'] : 'default.png';
+?>
+<img src="images/<?php echo $image; ?>" onerror="this.src='images/default.png'">
+</div>
 
-        today = yyyy + '-' + mm + '-' + dd;
-        document.getElementById("dfield").setAttribute("min", today);
-        
+<h1>Book <?php echo $email['CAR_NAME']; ?></h1>
 
+<form method="POST">
 
-    </script>
-    
-    
-    
-    
+<div class="form-grid">
+
+<div class="form-group">
+<label>Booking Place</label>
+<input type="text" name="place" required>
+</div>
+
+<div class="form-group">
+<label>Booking Date</label>
+<input type="date" name="date" id="datefield" required>
+</div>
+
+<div class="form-group">
+<label>Duration</label>
+<input type="number" name="dur" min="1" required>
+</div>
+
+<div class="form-group">
+<label>Phone</label>
+<input type="text" name="ph" maxlength="11" required>
+</div>
+
+<div class="form-group">
+<label>Destination</label>
+<input type="text" name="des" required>
+</div>
+
+<div class="form-group">
+<label>Return Date</label>
+<input type="date" name="rdate" id="rfield" required>
+</div>
+
+<div class="full">
+<button type="submit" name="book" class="btn">Book Now</button>
+</div>
+
+</div>
+
+</form>
+</div>
+
+<script>
+let today = new Date().toISOString().split('T')[0];
+document.getElementById("datefield").setAttribute("min", today);
+document.getElementById("rfield").setAttribute("min", today);
+</script>
+
 </body>
 </html>

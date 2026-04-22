@@ -1,82 +1,129 @@
-<html>
-  <head>
-    
-  </head>
-            <style>
-            body {
-                text-align: center;
-                /* padding: 40px 0; */
-                background-image: url("images/ps.png");
-                background-repeat: no-repeat;
-                background-position: center;
-                background-size: cover;
-                
-            }
-            h1 {
-            color: #88B04B;
-            font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
-            font-weight: 900;
-            font-size: 40px;
-            margin-bottom: 10px;
-            }
-            p {
-            color: #404F5E;
-            font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
-            font-size:20px;
-            margin: 0;
-            }
-            i {
-                color: #9ABC66;
-                font-size: 100px;
-                line-height: 200px;
-                margin-left:-15px;
-            }
-            .card {
-                background: white;
-                padding: 60px;
-                border-radius: 4px;
-                box-shadow: 0 2px 3px #C8D0D8;
-                display: inline-block;
-                margin-top: 100px;
-               
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Success</title>
 
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-            }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+}
 
+/* 🔥 FULL BACKGROUND */
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:url("images/ps.png") no-repeat center/cover;
+    position:relative;
+}
 
-            
-            #back{
-                width: 150px;
-                height: 40px;
-                background: #ff7200;
-                border:none;
-                margin-top: 10px;
-                margin-left: 65px;
-                font-size: 18px;
-            
+/* DARK OVERLAY */
+body::before{
+    content:'';
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    z-index:-1;
+}
 
-            }
+/* GLASS CARD */
+.card{
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(15px);
+    padding:50px 40px;
+    border-radius:15px;
+    text-align:center;
+    color:#fff;
+    box-shadow:0 10px 30px rgba(0,0,0,0.6);
+    animation:fadeIn 0.8s ease;
+}
 
-            #back a{
-                text-decoration: none;
-                color: black;
-                font-weight: bold;
-            }
-            .ba{
-                width: 1px;
-                
-            }
-            </style>
-    <body>
-       
-      <div class="card">
-      <div style="border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;">
-        <i class="checkmark">✓</i>
-      </div>
-        <h1>Success</h1> 
-        <p>We received your rental request;<br/> we'll be in touch shortly!</p>
-        <div class="ba"><button id="back"><a href="cardetails.php">Search Cars</a></button></div>
-        
-      </div>
-    </body>
+/* CHECK ICON */
+.circle{
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.1);
+    margin:0 auto 20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.checkmark{
+    font-size:70px;
+    color:#4CAF50;
+}
+
+/* TEXT */
+h1{
+    font-size:32px;
+    margin-bottom:10px;
+    color:#4CAF50;
+}
+
+p{
+    font-size:16px;
+    color:#ddd;
+    margin-bottom:25px;
+}
+
+/* BUTTON */
+.btn{
+    display:inline-block;
+    padding:12px 25px;
+    background:#ff7200;
+    color:#fff;
+    text-decoration:none;
+    border-radius:8px;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.btn:hover{
+    background:#e65c00;
+    transform:scale(1.05);
+}
+
+/* ANIMATION */
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(30px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="circle">
+        <div class="checkmark">✓</div>
+    </div>
+
+    <h1>Payment Successful</h1>
+
+    <p>Your booking has been confirmed.<br>
+    Thank you for choosing our service!</p>
+
+    <a href="cardetails.php" class="btn">Browse Cars</a>
+
+</div>
+
+</body>
 </html>

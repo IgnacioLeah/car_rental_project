@@ -1,44 +1,88 @@
+<?php
+session_start();
+require_once('connection.php');
+
+/* 🔐 PROTECT ADMIN PAGE */
+if(!isset($_SESSION['admin'])){
+    header("Location: adminlogin.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADMINISTRATOR</title>
-</head>
-<body>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADMINISTRATOR</title>
+
 <style>
 *{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
 
-}
+/* ✅ FIXED BACKGROUND */
 body{
-    background-image: url("../images/regs.jpg");
-    
-    
-    background-size: cover;
-    background-position: center;
-    /* margin-top: 0px; */
-    
+    min-height: 100vh;
+    background: url("images/regs.jpg") no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+/* 🔥 DARK OVERLAY FOR BETTER LOOK */
+body::before{
+    content:'';
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.5);
+    z-index:-1;
+}
+
+/* CONTAINER */
 .main{
     width: 400px;
-    margin: 100px auto 0px auto;
-    margin-top: 30px;
 }
+
+/* FORM BOX */
+.register{
+    background-color: rgba(0,0,0,0.7);
+    padding: 25px;
+    border-radius: 10px;
+    color: #fff;
+}
+
+/* TITLE */
+h2{
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* INPUT */
+input{
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: none;
+}
+
+/* BUTTON */
 .btnn{
-    width: 240px;
+    width: 100%;
     height: 40px;
     background: #ff7200;
     border:none;
-    margin-top: 30px;
-    margin-left: 40px;
+    margin-top: 20px;
     font-size: 18px;
     border-radius: 10px;
     cursor: pointer;
     color:#fff;
-    transition: 0.4s ease;
 }
 
 .btnn:hover{
@@ -46,141 +90,55 @@ body{
     color:#ff7200;
 }
 
-.btnn a{
-    text-decoration: none;
-    color: black;
-    font-weight: bold;
-}
-
-h2{
-    text-align: center;
-    padding: 20px;
-    font-family: sans-serif;
-
-}
-.register{
-    background-color: rgba(0,0,0,0.6);
-    width: 100%;
-    font-size: 18px;
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.3);
-    box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
-    color: #fff;
-    margin: auto;
-
-}
-
-form#register{
-    margin: 40px;
-    margin-top: 10px;
-
-}
-
-label{
-    font-family: sans-serif;
-    font-size: 18px;
-    font-style: italic;
-}
-
-input#name{
-    width:300px;
-    border:1px solid #ddd;
-    border-radius: 3px;
-    outline: 0;
-    padding: 7px;
-    background-color: #fff;
-    box-shadow:inset 1px 1px 5px rgba(0,0,0,0.3);
-}
-
-
+/* BACK BUTTON */
 #back{
-    width: 100px;
-    height: 40px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
     background: #ff7200;
     border:none;
-    margin-top: 10px;
-    margin-left: 20px;
-    font-size: 18px;
-   
-
+    padding:10px 20px;
+    border-radius: 8px;
 }
-
 
 #back a{
     text-decoration: none;
-    color: black;
+    color: #fff;
     font-weight: bold;
 }
-
-#fam{
-    color: #ff7200;
-    font-family: 'Times New Roman';
-    font-size: 50px;
-    padding-left: 20px;
-    margin-top:-10px;
-    text-align: center;
-    letter-spacing: 2px;
-    display: inline;
-    margin-left: 250px;
-}
-
-.reg{
-    width: 100%;
-}
-
-
-
 </style>
+</head>
 
-
-
-
-
+<body>
 
 <button id="back"><a href="adminvehicle.php">HOME</a></button> 
-    
- <div class="main">
-        
-        <div class="register">
+
+<div class="main">
+    <div class="register">
         <h2>Enter Details Of New Car</h2>
-        <form id="register"  action="upload.php" method="POST" enctype="multipart/form-data">    
-            <label>Car Name : </label>
-            <br>
-            <input type ="text" name="carname"
-            id="name" placeholder="Enter Car Name" required>
-            <br><br>
 
-            <label>Fuel Type : </label>
-            <br>
-            <input type ="text" name="ftype"
-            id="name" placeholder="Enter Fuel Type" required>
-            <br><br>
+        <form action="upload.php" method="POST" enctype="multipart/form-data">
 
-            <label>Capacity : </label>
-            <br>
-            <input type="number" name="capacity" min="1"
-            id="name" placeholder="Enter Capacity Of Car" required>
-            <br><br>
-            
-            <label>Price : </label>
-            <br>
-            <input type="number" name="price" min="1"
-            id="name" placeholder="Enter Price Of Car for One Day(in rupees)" required>
-            <br><br>
+            <label>Car Name:</label>
+            <input type="text" name="carname" placeholder="Enter Car Name" required>
 
-            <label>Car Image : </label>
-            <br>
+            <label>Fuel Type:</label>
+            <input type="text" name="ftype" placeholder="Enter Fuel Type" required>
+
+            <label>Capacity:</label>
+            <input type="number" name="capacity" min="1" placeholder="Enter Capacity" required>
+
+            <label>Price:</label>
+            <input type="number" name="price" min="1" placeholder="Enter Price (per day)" required>
+
+            <label>Car Image:</label>
             <input type="file" name="image" required>
-           <br><br>
 
-            <input type="submit" class="btnn"  value="ADD CAR" name="addcar">
-            
-        
-        
-        </input>
-            
+            <input type="submit" class="btnn" value="ADD CAR" name="addcar">
+
         </form>
-        </div> 
-    </div.main>
+    </div>
+</div>
+
 </body>
 </html>

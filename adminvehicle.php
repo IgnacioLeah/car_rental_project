@@ -1,3 +1,18 @@
+<?php
+session_start();
+require_once('connection.php');
+
+/* 🔐 PROTECT ADMIN PAGE */
+if(!isset($_SESSION['admin'])){
+    header("Location: adminlogin.php");
+    exit();
+}
+
+/* FETCH CARS */
+$query = "SELECT * FROM cars";
+$result = mysqli_query($con, $query);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,17 +28,19 @@
     font-family:'Segoe UI', sans-serif;
 }
 
-/* BACKGROUND */
+/* ✅ FIXED BODY */
 body{
-    height:100vh;
-    overflow:hidden;
-    background:url("../images/carbg2.jpg") no-repeat center/cover;
+    min-height:100vh;
+    overflow-y:auto;
+    background:url("images/carbg2.jpg") no-repeat center/cover;
 }
 
-/* OVERLAY */
+/* ✅ FIXED OVERLAY */
 body::before{
     content:'';
-    position:absolute;
+    position:fixed;
+    top:0;
+    left:0;
     width:100%;
     height:100%;
     background:rgba(0,0,0,0.65);
@@ -36,7 +53,7 @@ body::before{
     justify-content:space-between;
     align-items:center;
     padding:20px 50px;
-    background:rgba(0,0,0,0.7);
+    background:rgba(0,0,0,0.8);
 }
 
 .logo{
@@ -66,9 +83,7 @@ body::before{
 }
 
 /* PROFILE */
-.profile{
-    position:relative;
-}
+.profile{position:relative;}
 
 .profile-btn{
     background:#ff7200;
@@ -86,6 +101,17 @@ body::before{
     width:150px;
     border-radius:6px;
     display:none;
+}
+
+.dropdown a{
+    display:block;
+    padding:10px;
+    color:#000;
+    text-decoration:none;
+}
+
+.dropdown a:hover{
+    background:#f3f3f3;
 }
 
 /* CONTAINER */
@@ -123,18 +149,17 @@ body::before{
     font-weight:bold;
 }
 
-/* SCROLLABLE TABLE */
+/* TABLE WRAPPER */
 .table-wrapper{
     max-height:400px;
     overflow-y:auto;
     border-radius:10px;
-    position: relative;   /* 🔥 ADD THIS */
 }
 
 /* TABLE */
 table{
     width:100%;
-    border-collapse:separate; /* 🔥 change from collapse */
+    border-collapse:separate;
     border-spacing:0;
     background:#fff;
 }
@@ -145,11 +170,10 @@ thead{
 }
 
 thead th{
-    position: sticky;
-    top: 0;
-    z-index: 100;          /* 🔥 HIGHER */
-    background: #ff7200;   /* 🔥 FORCE SOLID COLOR */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:#ff7200;
 }
 
 th, td{
@@ -165,18 +189,13 @@ tbody tr:hover{
     background:#ffe4cc;
 }
 
-/* IMAGE */
+/* ✅ FIXED IMAGE */
 .car-img{
     width:120px;
     height:70px;
     object-fit:cover;
     border-radius:8px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.3);
-    transition:0.3s;
-}
-
-.car-img:hover{
-    transform:scale(1.2);
+    background:#222;
 }
 
 /* DELETE BUTTON */
@@ -187,21 +206,10 @@ tbody tr:hover{
     border-radius:6px;
     text-decoration:none;
 }
-
-.delete-btn:hover{
-    background:darkred;
-}
 </style>
-
 </head>
 
 <body>
-
-<?php
-require_once('connection.php');
-$query="SELECT * FROM cars";
-$queryy=mysqli_query($con,$query);
-?>
 
 <!-- NAVBAR -->
 <div class="navbar">
@@ -234,9 +242,9 @@ $queryy=mysqli_query($con,$query);
     </div>
 </div>
 
-<div class="table-wrapper"> <!-- ✅ SCROLL -->
-
+<div class="table-wrapper">
 <table>
+
 <thead>
 <tr>
     <th>ID</th>
@@ -251,31 +259,31 @@ $queryy=mysqli_query($con,$query);
 </thead>
 
 <tbody>
-<?php while($res=mysqli_fetch_array($queryy)){ ?>
+<?php while($res = mysqli_fetch_assoc($result)){ ?>
 <tr>
 
 <td><?php echo $res['CAR_ID']; ?></td>
 
 <td>
-<?php
+<?php 
 $image = !empty($res['CAR_IMG']) ? $res['CAR_IMG'] : 'default.png';
 ?>
 <img class="car-img"
-     src="../images/<?php echo $image; ?>"
-     onerror="this.src='../images/default.png'">
+     src="images/<?php echo htmlspecialchars($image); ?>"
+     onerror="this.src='images/default.png'">
 </td>
 
-<td><?php echo $res['CAR_NAME']; ?></td>
-<td><?php echo $res['FUEL_TYPE']; ?></td>
-<td><?php echo $res['CAPACITY']; ?></td>
-<td><?php echo $res['PRICE']; ?></td>
+<td><?php echo htmlspecialchars($res['CAR_NAME']); ?></td>
+<td><?php echo htmlspecialchars($res['FUEL_TYPE']); ?></td>
+<td><?php echo htmlspecialchars($res['CAPACITY']); ?></td>
+<td><?php echo htmlspecialchars($res['PRICE']); ?></td>
 
 <td><?php echo ($res['AVAILABLE']=='Y') ? 'YES' : 'NO'; ?></td>
 
 <td>
 <a class="delete-btn"
 href="deletecar.php?id=<?php echo $res['CAR_ID']; ?>"
-onclick="return confirmDelete('<?php echo $res['CAR_NAME']; ?>')">
+onclick="return confirm('Delete <?php echo htmlspecialchars($res['CAR_NAME']); ?>?')">
 Delete
 </a>
 </td>
@@ -299,10 +307,6 @@ window.onclick=function(e){
     if(!e.target.closest('.profile')){
         document.getElementById("dropdownMenu").style.display="none";
     }
-}
-
-function confirmDelete(name){
-    return confirm("Are you sure you want to delete " + name + "?");
 }
 </script>
 

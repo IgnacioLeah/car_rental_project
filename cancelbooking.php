@@ -1,3 +1,17 @@
+<?php
+	
+    require_once('connection.php');
+    session_start();
+    $bid = $_SESSION['bid'];
+    if(isset($_POST['cancelnow'])){
+        $del = mysqli_query($con,"delete from booking where BOOK_ID = '$bid' order by BOOK_ID DESC limit 1");
+        echo "<script>window.location.href='cardetails.php';</script>";
+        
+    }
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,19 +58,7 @@
     }
 
 </style>
-<?php
-	
-    require_once('connection.php');
-    session_start();
-    $bid = $_SESSION['bid'];
-    if(isset($_POST['cancelnow'])){
-        $del = mysqli_query($con,"delete from booking where BOOK_ID = '$bid' order by BOOK_ID DESC limit 1");
-        echo "<script>window.location.href='cardetails.php';</script>";
-        
-    }
 
-
-?>
  <form class="form"  method="POST" >
         <h1>ARE YOU SURE YOU WANT TO CANCEL YOUR BOOKING?</h1>
         <input  type="submit" class="hai" value="CANCEL NOW" name="cancelnow">

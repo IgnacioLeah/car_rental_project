@@ -203,7 +203,7 @@ td{
     <div class="profile">
         <div class="profile-btn" onclick="toggleMenu()">👤 Admin ⬇️</div>
         <div class="dropdown" id="dropdownMenu">
-            <a href="index.php">🚪 Logout</a>
+            <a href="#" onclick="confirmLogout()">🚪 Logout</a>
         </div>
     </div>
 </div>
@@ -267,6 +267,12 @@ function toggleMenu(){
 window.onclick=function(e){
     if(!e.target.closest('.profile')){
         document.getElementById("dropdownMenu").style.display="none";
+    }
+}
+/* ✅ LOGOUT CONFIRM */
+function confirmLogout(){
+    if(confirm("Are you sure you want to logout?")){
+        window.location.href = "index.php";
     }
 }
 </script>

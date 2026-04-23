@@ -28,14 +28,14 @@ $result = mysqli_query($con, $query);
     font-family:'Segoe UI', sans-serif;
 }
 
-/* ✅ FIXED BODY */
+/* BODY */
 body{
     min-height:100vh;
     overflow-y:auto;
     background:url("images/carbg2.jpg") no-repeat center/cover;
 }
 
-/* ✅ FIXED OVERLAY */
+/* OVERLAY */
 body::before{
     content:'';
     position:fixed;
@@ -110,10 +110,6 @@ body::before{
     text-decoration:none;
 }
 
-.dropdown a:hover{
-    background:#f3f3f3;
-}
-
 /* CONTAINER */
 .container{
     width:90%;
@@ -149,14 +145,13 @@ body::before{
     font-weight:bold;
 }
 
-/* TABLE WRAPPER */
+/* TABLE */
 .table-wrapper{
     max-height:400px;
     overflow-y:auto;
     border-radius:10px;
 }
 
-/* TABLE */
 table{
     width:100%;
     border-collapse:separate;
@@ -189,13 +184,15 @@ tbody tr:hover{
     background:#ffe4cc;
 }
 
-/* ✅ FIXED IMAGE */
+/* IMAGE FIX */
 .car-img{
     width:120px;
     height:70px;
     object-fit:cover;
     border-radius:8px;
     background:#222;
+    display:block;
+    margin:auto;
 }
 
 /* DELETE BUTTON */
@@ -227,7 +224,7 @@ tbody tr:hover{
     <div class="profile">
         <div class="profile-btn" onclick="toggleMenu()">👤 Admin ⬇️</div>
         <div class="dropdown" id="dropdownMenu">
-            <a href="index.php">🚪 Logout</a>
+            <a href="#" onclick="confirmLogout()">🚪 Logout</a>
         </div>
     </div>
 </div>
@@ -266,11 +263,23 @@ tbody tr:hover{
 
 <td>
 <?php 
-$image = !empty($res['CAR_IMG']) ? $res['CAR_IMG'] : 'default.png';
+$image = $res['CAR_IMG'];
+
+/* 🔥 SMART IMAGE FIX */
+if(!empty($image) && file_exists("images/".$image)){
+    $finalImage = "images/".$image;
+}
+else if(!empty($image) && file_exists("uploads/".$image)){
+    $finalImage = "uploads/".$image;
+}
+else{
+    $finalImage = "images/default.png";
+}
 ?>
+
 <img class="car-img"
-     src="images/<?php echo htmlspecialchars($image); ?>"
-     onerror="this.src='images/default.png'">
+     src="<?php echo htmlspecialchars($finalImage); ?>"
+     onerror="this.src='images/default.png';">
 </td>
 
 <td><?php echo htmlspecialchars($res['CAR_NAME']); ?></td>
@@ -301,6 +310,13 @@ Delete
 function toggleMenu(){
     let menu=document.getElementById("dropdownMenu");
     menu.style.display=(menu.style.display==="block")?"none":"block";
+}
+
+/* ✅ LOGOUT CONFIRM */
+function confirmLogout(){
+    if(confirm("Are you sure you want to logout?")){
+        window.location.href = "index.php";
+    }
 }
 
 window.onclick=function(e){

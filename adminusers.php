@@ -199,7 +199,7 @@ $queryy=mysqli_query($con,$query);
     <div class="profile-btn" onclick="toggleMenu()">👤 Admin ⬇️</div>
 
     <div class="dropdown" id="dropdownMenu">
-        <a href="index.php">🚪 Logout</a>
+            <a href="#" onclick="confirmLogout()">🚪 Logout</a>
     </div>
 </div>
 
@@ -263,6 +263,13 @@ window.onclick = function(e){
 
 function confirmDelete(name){
     return confirm("Are you sure you want to delete user " + name + "?");
+}
+
+/* ✅ LOGOUT CONFIRM */
+function confirmLogout(){
+    if(confirm("Are you sure you want to logout?")){
+        window.location.href = "index.php";
+    }
 }
 </script>
 

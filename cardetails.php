@@ -2,7 +2,7 @@
 session_start();
 require_once('connection.php');
 
-/* 🔐 PROTECT PAGE */
+/* PROTECT PAGE */
 if(!isset($_SESSION['email'])){
     header("Location: index.php");
     exit();
@@ -28,7 +28,6 @@ $cars= mysqli_query($con,$sql2);
 <title>Car Details</title>
 
 <style>
-/* ✅ YOUR CSS (UNCHANGED) */
 *{
     margin:0;
     padding:0;
@@ -155,7 +154,11 @@ body::before{
             <li><a href="bookinstatus.php">STATUS</a></li>
             <li><img src="images/profile.png" class="circle"></li>
             <li style="color:white;">Hello, <?php echo $rows['FNAME']; ?></li>
-            <li><a href="index.php">LOGOUT</a></li>
+
+            <!-- ✅ LOGOUT WITH CONFIRM -->
+            <li>
+                <a href="#" onclick="confirmLogout()">LOGOUT</a>
+            </li>
         </ul>
     </div>
 </div>
@@ -192,6 +195,16 @@ $image = !empty($result['CAR_IMG']) ? $result['CAR_IMG'] : 'default.png';
 <?php } ?>
 
 </div>
+
+<!-- ✅ LOGOUT SCRIPT -->
+<script>
+function confirmLogout(){
+    let confirmAction = confirm("Are you sure you want to logout?");
+    if(confirmAction){
+        window.location.href = "index.php";
+    }
+}
+</script>
 
 </body>
 </html>

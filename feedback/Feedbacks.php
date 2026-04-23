@@ -1,3 +1,38 @@
+<?php
+session_start();
+require_once('../connection.php');
+
+/* PROTECT PAGE */
+if(!isset($_SESSION['email'])){
+    header("Location: ../index.php");
+    exit();
+}
+
+$email = $_SESSION['email'];
+
+/* SUBMIT FEEDBACK */
+if(isset($_POST['submit'])){
+    $comment = mysqli_real_escape_string($con, $_POST['comment']);
+
+    if(empty($comment)){
+        echo "<script>alert('Please enter feedback');</script>";
+    } else {
+        $sql="INSERT INTO feedback (EMAIL, COMMENT) 
+              VALUES('$email','$comment')";
+
+        if(mysqli_query($con,$sql)){
+            echo "<script>
+                    alert('Feedback Sent Successfully!');
+                    window.location='../cardetails.php';
+                  </script>";
+            exit();
+        } else {
+            echo "<script>alert('Error submitting feedback');</script>";
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,21 +41,6 @@
 </head>
 
 <body class="feedback-body">
-
-<?php
-require_once('../connection.php');
-session_start();
-
-$email = $_SESSION['email'];
-
-if(isset($_POST['submit'])){
-    $comment=mysqli_real_escape_string($con,$_POST['comment']);
-    $sql="INSERT INTO feedback (EMAIL,COMMENT) VALUES('$email','$comment')";
-    mysqli_query($con,$sql);
-
-    echo "<script>alert('Feedback Sent Successfully!'); window.location='../cardetails.php';</script>";
-}
-?>
 
 <a href="../cardetails.php" class="back-btn">← Back</a>
 
@@ -32,7 +52,8 @@ if(isset($_POST['submit'])){
 
         <div class="input-group">
             <label>Email</label>
-            <input type="email" value="<?php echo $email; ?>" disabled>
+            <!-- ✅ SAFE OUTPUT -->
+            <input type="email" value="<?php echo htmlspecialchars($email); ?>" disabled>
         </div>
 
         <div class="input-group">

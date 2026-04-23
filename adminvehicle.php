@@ -65,9 +65,6 @@ body::before{
 .menu ul{
     display:flex;
     gap:30px;
-}
-
-.menu ul li{
     list-style:none;
 }
 
@@ -168,7 +165,6 @@ thead th{
     position:sticky;
     top:0;
     z-index:10;
-    background:#ff7200;
 }
 
 th, td{
@@ -184,7 +180,7 @@ tbody tr:hover{
     background:#ffe4cc;
 }
 
-/* IMAGE FIX */
+/* IMAGE */
 .car-img{
     width:120px;
     height:70px;
@@ -265,7 +261,6 @@ tbody tr:hover{
 <?php 
 $image = $res['CAR_IMG'];
 
-/* 🔥 SMART IMAGE FIX */
 if(!empty($image) && file_exists("images/".$image)){
     $finalImage = "images/".$image;
 }
@@ -285,7 +280,9 @@ else{
 <td><?php echo htmlspecialchars($res['CAR_NAME']); ?></td>
 <td><?php echo htmlspecialchars($res['FUEL_TYPE']); ?></td>
 <td><?php echo htmlspecialchars($res['CAPACITY']); ?></td>
-<td><?php echo htmlspecialchars($res['PRICE']); ?></td>
+
+<!-- ✅ PRICE FIX -->
+<td>₱<?php echo number_format($res['PRICE'], 2); ?></td>
 
 <td><?php echo ($res['AVAILABLE']=='Y') ? 'YES' : 'NO'; ?></td>
 
@@ -312,7 +309,6 @@ function toggleMenu(){
     menu.style.display=(menu.style.display==="block")?"none":"block";
 }
 
-/* ✅ LOGOUT CONFIRM */
 function confirmLogout(){
     if(confirm("Are you sure you want to logout?")){
         window.location.href = "index.php";

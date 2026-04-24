@@ -2,7 +2,7 @@
 session_start();
 require_once('connection.php');
 
-/* 🔐 PROTECT PAGE */
+/* PROTECT PAGE */
 if(!isset($_SESSION['email'])){
     header("Location: index.php");
     exit();
@@ -19,33 +19,36 @@ $carid = $_GET['id'];
 /* GET CAR INFO */
 $sql = "SELECT * FROM cars WHERE CAR_ID='$carid'";
 $cname = mysqli_query($con,$sql);
-$email = mysqli_fetch_assoc($cname);
+$car = mysqli_fetch_assoc($cname);
 
 /* GET USER INFO */
 $value = $_SESSION['email'];
 $sql = "SELECT * FROM users WHERE EMAIL='$value'";
 $name = mysqli_query($con,$sql);
-$rows = mysqli_fetch_assoc($name);
+$user = mysqli_fetch_assoc($name);
 
-$uemail = $rows['EMAIL'];
-$carprice = $email['PRICE'];
+$uemail = $user['EMAIL'];
+$carprice = $car['PRICE'];
+$userPhone = $user['PHONE_NUMBER'];
 
 /* BOOKING PROCESS */
 if(isset($_POST['book'])){
     $bplace = $_POST['place'];
-    $bdate = date('Y-m-d',strtotime($_POST['date']));
-    $dur = $_POST['dur'];
+    $bdate = $_POST['date'];
+    $rdate = $_POST['rdate'];
     $phno = $_POST['ph'];
     $des = $_POST['des'];
-    $rdate = date('Y-m-d',strtotime($_POST['rdate']));
 
-    if($bdate < $rdate){
+    /* AUTO COMPUTE DURATION */
+    $duration = (strtotime($rdate) - strtotime($bdate)) / (60*60*24);
 
-        $price = ($dur * $carprice);
+    if($duration > 0){
+
+        $price = ($duration * $carprice);
 
         $sql = "INSERT INTO booking 
         (CAR_ID,EMAIL,BOOK_PLACE,BOOK_DATE,DURATION,PHONE_NUMBER,DESTINATION,PRICE,RETURN_DATE) 
-        VALUES ('$carid','$uemail','$bplace','$bdate','$dur','$phno','$des','$price','$rdate')";
+        VALUES ('$carid','$uemail','$bplace','$bdate','$duration','$phno','$des','$price','$rdate')";
 
         mysqli_query($con,$sql);
 
@@ -66,26 +69,17 @@ if(isset($_POST['book'])){
 <title>Car Booking</title>
 
 <style>
-/* ✅ YOUR ORIGINAL DESIGN */
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Segoe UI', sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI', sans-serif;}
 
 body{
     min-height:100vh;
     background:url("images/book.jpg") no-repeat center center fixed;
     background-size:cover;
-    position:relative;
 }
 
 body::before{
     content:'';
     position:fixed;
-    top:0;
-    left:0;
     width:100%;
     height:100%;
     background:rgba(0,0,0,0.75);
@@ -95,64 +89,36 @@ body::before{
 .navbar{
     display:flex;
     justify-content:space-between;
-    align-items:center;
     padding:20px 50px;
     background:rgba(0,0,0,0.7);
 }
 
-.logo{
-    color:#ff7200;
-    font-size:28px;
-    font-weight:bold;
-}
+.logo{color:#ff7200;font-size:28px;}
 
-.menu ul{
-    display:flex;
-    gap:25px;
-    list-style:none;
-}
+.menu ul{display:flex;gap:25px;list-style:none;}
 
-.menu a{
-    color:#fff;
-    text-decoration:none;
-    font-weight:bold;
-}
-
-.menu a:hover{
-    color:#ff7200;
-}
-
-.circle{
-    width:40px;
-    border-radius:50%;
-}
+.menu a{color:#fff;text-decoration:none;font-weight:bold;}
 
 .container{
     width:900px;
     margin:40px auto;
     background:rgba(0,0,0,0.65);
-    backdrop-filter:blur(12px);
     border-radius:15px;
     padding:30px;
     color:#fff;
 }
 
-.car-preview{
-    text-align:center;
-    margin-bottom:20px;
-}
+.car-preview{text-align:center;margin-bottom:20px;}
 
 .car-preview img{
-    width:240px;
-    height:150px;
-    object-fit:cover;
-    border-radius:10px;
+    width:240px;height:150px;
+    object-fit:cover;border-radius:10px;
 }
 
 .container h1{
     text-align:center;
-    margin-bottom:25px;
     color:#ff7200;
+    margin-bottom:20px;
 }
 
 .form-grid{
@@ -168,12 +134,8 @@ body::before{
 
 .full{
     grid-column:span 2;
-}
-
-label{
-    margin-bottom:5px;
-    font-size:14px;
-    color:#ccc;
+    display:flex;
+    justify-content:center; /* ✅ CENTER BUTTON */
 }
 
 input{
@@ -185,14 +147,17 @@ input{
 }
 
 .btn{
-    width:100%;
-    padding:12px;
+    padding:12px 40px; /* wider button */
     background:#ff7200;
     border:none;
     border-radius:8px;
     color:#fff;
-    font-size:16px;
     cursor:pointer;
+    font-size:16px;
+}
+
+.btn:hover{
+    background:#e65c00;
 }
 </style>
 </head>
@@ -202,15 +167,12 @@ input{
 <!-- NAVBAR -->
 <div class="navbar">
     <div class="logo">CaRs</div>
-
     <div class="menu">
         <ul>
             <li><a href="cardetails.php">Home</a></li>
             <li><a href="bookinstatus.php">Status</a></li>
         </ul>
     </div>
-
-    <img src="images/profile.png" class="circle">
 </div>
 
 <!-- FORM -->
@@ -218,12 +180,12 @@ input{
 
 <div class="car-preview">
 <?php 
-$image = !empty($email['CAR_IMG']) ? $email['CAR_IMG'] : 'default.png';
+$image = !empty($car['CAR_IMG']) ? $car['CAR_IMG'] : 'default.png';
 ?>
 <img src="images/<?php echo $image; ?>" onerror="this.src='images/default.png'">
 </div>
 
-<h1>Book <?php echo $email['CAR_NAME']; ?></h1>
+<h1>Book <?php echo $car['CAR_NAME']; ?></h1>
 
 <form method="POST">
 
@@ -239,14 +201,24 @@ $image = !empty($email['CAR_IMG']) ? $email['CAR_IMG'] : 'default.png';
 <input type="date" name="date" id="datefield" required>
 </div>
 
+<!-- AUTO DURATION -->
 <div class="form-group">
-<label>Duration</label>
-<input type="number" name="dur" min="1" required>
+<label>Duration (Auto)</label>
+<input type="number" id="duration" readonly>
 </div>
 
+<!-- ✅ EDITABLE PHONE -->
 <div class="form-group">
 <label>Phone</label>
-<input type="text" name="ph" maxlength="11" required>
+<input 
+    type="text" 
+    name="ph" 
+    value="<?php echo $userPhone; ?>"
+    maxlength="11"
+    pattern="09[0-9]{9}"
+    inputmode="numeric"
+    required
+    oninput="this.value=this.value.replace(/[^0-9]/g,'')">
 </div>
 
 <div class="form-group">
@@ -259,6 +231,7 @@ $image = !empty($email['CAR_IMG']) ? $email['CAR_IMG'] : 'default.png';
 <input type="date" name="rdate" id="rfield" required>
 </div>
 
+<!-- ✅ CENTER BUTTON -->
 <div class="full">
 <button type="submit" name="book" class="btn">Book Now</button>
 </div>
@@ -272,6 +245,28 @@ $image = !empty($email['CAR_IMG']) ? $email['CAR_IMG'] : 'default.png';
 let today = new Date().toISOString().split('T')[0];
 document.getElementById("datefield").setAttribute("min", today);
 document.getElementById("rfield").setAttribute("min", today);
+
+/* AUTO CALCULATE DURATION */
+document.getElementById("rfield").addEventListener("change", calculateDays);
+document.getElementById("datefield").addEventListener("change", calculateDays);
+
+function calculateDays(){
+    let start = document.getElementById("datefield").value;
+    let end = document.getElementById("rfield").value;
+
+    if(start && end){
+        let d1 = new Date(start);
+        let d2 = new Date(end);
+
+        let diff = (d2 - d1) / (1000 * 60 * 60 * 24);
+
+        if(diff > 0){
+            document.getElementById("duration").value = diff;
+        } else {
+            document.getElementById("duration").value = "";
+        }
+    }
+}
 </script>
 
 </body>

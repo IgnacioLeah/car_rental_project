@@ -213,7 +213,6 @@ tbody tr:hover{
             <li><a href="adminvehicle.php" class="active">Vehicles</a></li>
             <li><a href="adminusers.php">Users</a></li>
             <li><a href="admindash.php">Feedbacks</a></li>
-            <li><a href="adminbook.php">Bookings</a></li>
         </ul>
     </div>
 

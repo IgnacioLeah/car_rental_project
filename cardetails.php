@@ -149,7 +149,7 @@ body::before{
         <ul>
             <li><a href="#">HOME</a></li>
             <li><a href="aboutus2.html">ABOUT</a></li>
-            <li><a href="contactus2.html">CONTACT</a></li>
+            <li><a href="contactus2.php">CONTACT</a></li>
             <li><a href="feedback/Feedbacks.php">FEEDBACK</a></li>
             <li><a href="bookinstatus.php">STATUS</a></li>
             <li><img src="images/profile.png" class="circle"></li>

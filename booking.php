@@ -135,7 +135,7 @@ body::before{
 .full{
     grid-column:span 2;
     display:flex;
-    justify-content:center; /* ✅ CENTER BUTTON */
+    justify-content:center; /* CENTER BUTTON */
 }
 
 input{
@@ -207,7 +207,7 @@ $image = !empty($car['CAR_IMG']) ? $car['CAR_IMG'] : 'default.png';
 <input type="number" id="duration" readonly>
 </div>
 
-<!-- ✅ EDITABLE PHONE -->
+<!-- EDITABLE PHONE -->
 <div class="form-group">
 <label>Phone</label>
 <input 
@@ -231,7 +231,7 @@ $image = !empty($car['CAR_IMG']) ? $car['CAR_IMG'] : 'default.png';
 <input type="date" name="rdate" id="rfield" required>
 </div>
 
-<!-- ✅ CENTER BUTTON -->
+<!-- CENTER BUTTON -->
 <div class="full">
 <button type="submit" name="book" class="btn">Book Now</button>
 </div>

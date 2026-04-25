@@ -10,42 +10,24 @@ if(!isset($_SESSION['email'])){
 
 $email = $_SESSION['email'];
 
-/* GET LATEST BOOKING */
-$sql = "SELECT * FROM booking WHERE EMAIL='$email' ORDER BY BOOK_ID DESC LIMIT 1";
+/* GET ALL BOOKINGS */
+$sql = "SELECT * FROM booking WHERE EMAIL='$email' ORDER BY BOOK_ID DESC";
 $result = mysqli_query($con,$sql);
 
 if(!$result){
     die("Query Error: " . mysqli_error($con));
 }
 
-$rows = mysqli_fetch_assoc($result);
-
-/* NO BOOKING */
-if(!$rows){
-    echo "<script>alert('NO BOOKING FOUND'); window.location='cardetails.php';</script>";
+/* NO BOOKINGS */
+if(mysqli_num_rows($result) == 0){
+    echo "<script>alert('NO BOOKINGS FOUND'); window.location='cardetails.php';</script>";
     exit();
 }
 
 /* GET USER */
 $sql2 = "SELECT * FROM users WHERE EMAIL='$email'";
 $res2 = mysqli_query($con,$sql2);
-$rows2 = mysqli_fetch_assoc($res2);
-
-/* GET CAR */
-$car_id = $rows['CAR_ID'];
-$sql3 = "SELECT * FROM cars WHERE CAR_ID='$car_id'";
-$res3 = mysqli_query($con,$sql3);
-$rows3 = mysqli_fetch_assoc($res3);
-
-/* STATUS */
-$status = isset($rows['BOOK_STATUS']) ? $rows['BOOK_STATUS'] : "PENDING";
-
-$statusClass = "pending";
-if($status == "APPROVED") $statusClass="approved";
-if($status == "REJECTED") $statusClass="rejected";
-
-/* ✅ TOTAL PAYMENT */
-$total = $rows['PRICE'];
+$user = mysqli_fetch_assoc($res2);
 ?>
 
 <!DOCTYPE html>
@@ -66,132 +48,144 @@ $total = $rows['PRICE'];
 body{
     min-height:100vh;
     background:url("images/carbg2.jpg") no-repeat center/cover;
-    position:relative;
     padding:40px 0;
 }
 
 body::before{
     content:'';
     position:fixed;
-    top:0;
-    left:0;
     width:100%;
     height:100%;
     background:rgba(0,0,0,0.65);
     z-index:-1;
 }
 
-.container{
-    width:600px;
-    max-width:90%;
+/* GRID CONTAINER */
+.wrapper{
+    width:90%;
     margin:auto;
-    background:rgba(0,0,0,0.6);
-    backdrop-filter:blur(12px);
-    border-radius:15px;
-    padding:30px;
-    text-align:center;
-    color:#fff;
-    box-shadow:0 10px 30px rgba(0,0,0,0.6);
 }
 
 .header{
-    margin-bottom:20px;
+    text-align:center;
+    margin-bottom:30px;
+    color:#fff;
 }
 
 .header h2{
     color:#ff7200;
 }
 
+/* CARD */
+.card{
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(10px);
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:20px;
+    display:flex;
+    gap:20px;
+    align-items:center;
+    color:#fff;
+}
+
+/* IMAGE */
 .car-img{
-    width:220px;
-    height:130px;
+    width:180px;
+    height:110px;
     object-fit:cover;
     border-radius:10px;
-    margin:15px auto;
-    display:block;
 }
 
+/* INFO */
 .info{
-    text-align:left;
-    margin-top:15px;
-}
-
-.info p{
-    margin:10px 0;
-}
-
-/* 🔥 TOTAL PAYMENT STYLE */
-.total{
-    margin-top:15px;
-    font-size:18px;
-    font-weight:bold;
-    color:#ff7200;
-    text-align:center;
+    flex:1;
 }
 
 /* STATUS */
 .status{
-    display:inline-block;
     padding:5px 12px;
     border-radius:20px;
     margin-left:10px;
+    font-size:13px;
 }
 
 .approved{background:#4CAF50;}
 .pending{background:#ff9800;}
 .rejected{background:red;}
 
+/* TOTAL */
+.total{
+    font-weight:bold;
+    color:#ff7200;
+    margin-top:8px;
+}
+
+/* BUTTON */
 .btn{
-    display:inline-block;
-    margin-top:20px;
-    padding:10px 20px;
+    display:block;
+    width:200px;
+    margin:30px auto;
+    text-align:center;
+    padding:10px;
     background:#ff7200;
     color:#fff;
     text-decoration:none;
     border-radius:8px;
-    font-weight:bold;
-}
-
-.btn:hover{
-    background:#e65c00;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="wrapper">
 
 <div class="header">
-    <h2>Booking Status</h2>
-    <p>Hello, 
-        <strong><?php echo htmlspecialchars($rows2['FNAME']." ".$rows2['LNAME']); ?></strong>
-    </p>
+    <h2>My Bookings</h2>
+    <p>Hello, <strong><?php echo $user['FNAME']." ".$user['LNAME']; ?></strong></p>
 </div>
 
-<?php 
-$image = !empty($rows3['CAR_IMG']) ? $rows3['CAR_IMG'] : 'default.png';
+<?php while($rows = mysqli_fetch_assoc($result)){ 
+
+    /* GET CAR */
+    $car_id = $rows['CAR_ID'];
+    $carQuery = mysqli_query($con,"SELECT * FROM cars WHERE CAR_ID='$car_id'");
+    $car = mysqli_fetch_assoc($carQuery);
+
+    /* STATUS */
+    $status = $rows['BOOK_STATUS'] ?? "PENDING";
+    $statusClass = "pending";
+    if($status=="APPROVED") $statusClass="approved";
+    if($status=="REJECTED") $statusClass="rejected";
+
+    $image = !empty($car['CAR_IMG']) ? $car['CAR_IMG'] : 'default.png';
 ?>
 
-<img src="images/<?php echo htmlspecialchars($image); ?>" 
-     class="car-img"
-     onerror="this.src='images/default.png'">
+<div class="card">
 
-<div class="info">
-    <p><strong>Car:</strong> <?php echo htmlspecialchars($rows3['CAR_NAME']); ?></p>
-    <p><strong>Duration:</strong> <?php echo $rows['DURATION']; ?> days</p>
+    <img src="images/<?php echo htmlspecialchars($image); ?>" 
+         class="car-img"
+         onerror="this.src='images/default.png'">
 
-    <p>
-        <strong>Status:</strong> 
-        <span class="status <?php echo $statusClass; ?>">
-            <?php echo $status; ?>
-        </span>
-    </p>
+    <div class="info">
+        <p><strong>Car:</strong> <?php echo $car['CAR_NAME']; ?></p>
+        <p><strong>Duration:</strong> <?php echo $rows['DURATION']; ?> days</p>
+
+        <p>
+            <strong>Status:</strong>
+            <span class="status <?php echo $statusClass; ?>">
+                <?php echo $status; ?>
+            </span>
+        </p>
+
+        <div class="total">
+            Total: ₱<?php echo number_format($rows['PRICE'], 2); ?>
+        </div>
+    </div>
+
 </div>
 
-<div class="total">
-    Total Payment: ₱<?php echo number_format($total, 2); ?>
-</div>
+<?php } ?>
 
 <a href="cardetails.php" class="btn">Back to Home</a>
 

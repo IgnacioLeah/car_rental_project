@@ -190,7 +190,6 @@ $queryy=mysqli_query($con,$query);
         <li><a href="adminvehicle.php">Vehicles</a></li>
         <li><a href="adminusers.php" class="active">Users</a></li>
         <li><a href="admindash.php">Feedbacks</a></li>
-        <li><a href="adminbook.php">Bookings</a></li>
     </ul>
 </div>
 

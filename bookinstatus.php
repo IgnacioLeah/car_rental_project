@@ -48,7 +48,6 @@ $user = mysqli_fetch_assoc($res2);
 body{
     min-height:100vh;
     background:url("images/carbg2.jpg") no-repeat center/cover;
-    padding:40px 0;
 }
 
 body::before{
@@ -108,17 +107,42 @@ body::before{
     border-radius:20px;
     margin-left:10px;
     font-size:13px;
+    font-weight:bold;
 }
 
-.approved{background:#4CAF50;}
-.pending{background:#ff9800;}
-.rejected{background:red;}
+.approved{
+    background:#4CAF50;
+}
+
+.pending{
+    background:#ff9800;
+}
+
+.rejected{
+    background:red;
+}
 
 /* TOTAL */
 .total{
     font-weight:bold;
     color:#ff7200;
     margin-top:8px;
+}
+
+/* REJECT MESSAGE */
+.reject-box{
+    margin-top:12px;
+    padding:12px;
+    background:rgba(255,0,0,0.15);
+    border-left:4px solid red;
+    border-radius:8px;
+    color:#ffb3b3;
+}
+
+.reject-title{
+    color:#ff4d4d;
+    font-weight:bold;
+    margin-bottom:5px;
 }
 
 /* BUTTON */
@@ -132,6 +156,11 @@ body::before{
     color:#fff;
     text-decoration:none;
     border-radius:8px;
+    font-weight:bold;
+}
+
+.btn:hover{
+    background:#e66000;
 }
 </style>
 </head>
@@ -142,52 +171,99 @@ body::before{
 
 <div class="header">
     <h2>My Bookings</h2>
-    <p>Hello, <strong><?php echo $user['FNAME']." ".$user['LNAME']; ?></strong></p>
+    <p>
+        Hello, 
+        <strong>
+            <?php echo htmlspecialchars($user['FNAME']." ".$user['LNAME']); ?>
+        </strong>
+    </p>
 </div>
 
 <?php while($rows = mysqli_fetch_assoc($result)){ 
 
     /* GET CAR */
     $car_id = $rows['CAR_ID'];
-    $carQuery = mysqli_query($con,"SELECT * FROM cars WHERE CAR_ID='$car_id'");
+
+    $carQuery = mysqli_query($con,
+        "SELECT * FROM cars WHERE CAR_ID='$car_id'"
+    );
+
     $car = mysqli_fetch_assoc($carQuery);
 
     /* STATUS */
     $status = $rows['BOOK_STATUS'] ?? "PENDING";
+
     $statusClass = "pending";
+
     if($status=="APPROVED") $statusClass="approved";
     if($status=="REJECTED") $statusClass="rejected";
 
-    $image = !empty($car['CAR_IMG']) ? $car['CAR_IMG'] : 'default.png';
+    $image = !empty($car['CAR_IMG']) 
+        ? $car['CAR_IMG'] 
+        : 'default.png';
+
+    /* REJECT MESSAGE */
+    $rejectReason = $rows['REASON_OF_REJECT'] ?? '';
 ?>
 
 <div class="card">
 
-    <img src="images/<?php echo htmlspecialchars($image); ?>" 
-         class="car-img"
-         onerror="this.src='images/default.png'">
+    <img 
+        src="images/<?php echo htmlspecialchars($image); ?>" 
+        class="car-img"
+        onerror="this.src='images/default.png'"
+    >
 
     <div class="info">
-        <p><strong>Car:</strong> <?php echo $car['CAR_NAME']; ?></p>
-        <p><strong>Duration:</strong> <?php echo $rows['DURATION']; ?> days</p>
+
+        <p>
+            <strong>Car:</strong> 
+            <?php echo htmlspecialchars($car['CAR_NAME']); ?>
+        </p>
+
+        <p>
+            <strong>Duration:</strong> 
+            <?php echo $rows['DURATION']; ?> days
+        </p>
 
         <p>
             <strong>Status:</strong>
+
             <span class="status <?php echo $statusClass; ?>">
-                <?php echo $status; ?>
+                <?php echo htmlspecialchars($status); ?>
             </span>
         </p>
 
         <div class="total">
             Total: ₱<?php echo number_format($rows['PRICE'], 2); ?>
         </div>
+
+        <!-- ✅ SHOW REJECT REASON ONLY IF REJECTED -->
+        <?php if($status == "REJECTED" && !empty($rejectReason)){ ?>
+
+        <div class="reject-box">
+
+            <div class="reject-title">
+                Rejection Message
+            </div>
+
+            <div>
+                <?php echo htmlspecialchars($rejectReason); ?>
+            </div>
+
+        </div>
+
+        <?php } ?>
+
     </div>
 
 </div>
 
 <?php } ?>
 
-<a href="cardetails.php" class="btn">Back to Home</a>
+<a href="cardetails.php" class="btn">
+    Back to Home
+</a>
 
 </div>
 

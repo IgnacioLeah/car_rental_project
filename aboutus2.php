@@ -1,23 +1,24 @@
-<?php 
+<?php
 session_start();
 require_once('connection.php');
 
 /* PROTECT PAGE */
+
 if(!isset($_SESSION['email'])){
     header("Location: index.php");
     exit();
 }
 
-$value = $_SESSION['email'];
+$email = $_SESSION['email'];
 
-/* USER DATA */
-$sql = "SELECT * FROM users WHERE EMAIL='$value'";
-$name = mysqli_query($con,$sql);
-$rows = mysqli_fetch_assoc($name);
+/* FETCH USER DATA */
 
-/* AVAILABLE CARS */
-$sql2 = "SELECT * FROM cars WHERE AVAILABLE='Y'";
-$cars = mysqli_query($con,$sql2);
+$userQuery = mysqli_query(
+$con,
+"SELECT * FROM users WHERE EMAIL='$email'"
+);
+
+$user = mysqli_fetch_assoc($userQuery);
 ?>
 
 <!DOCTYPE html>
@@ -26,9 +27,10 @@ $cars = mysqli_query($con,$sql2);
 <head>
 
 <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Luxury Car Rental</title>
+<title>CaRs | About Us</title>
 
 <!-- GOOGLE FONT -->
 
@@ -210,8 +212,6 @@ body{
     transform:translateY(-2px);
 }
 
-/* PROFILE IMAGE */
-
 .circle{
 
     width:46px;
@@ -249,8 +249,6 @@ body{
 
     font-size:11px;
 }
-
-/* ARROW */
 
 .arrow{
 
@@ -381,191 +379,264 @@ body{
     background:#ff7200;
 }
 
-/* TITLE */
+/* ABOUT CONTAINER */
 
-.overview{
+.about-container{
 
-    text-align:center;
-
-    margin-bottom:35px;
-
-    color:white;
-
-    font-size:65px;
-
-    font-weight:700;
-}
-
-.overview span{
-    color:#ff7200;
-}
-
-/* GRID */
-
-.car-container{
+    width:100%;
 
     display:grid;
 
-    grid-template-columns:
-    repeat(auto-fit,minmax(300px,1fr));
+    grid-template-columns:1fr 1fr;
 
-    gap:25px;
-
-    align-items:stretch;
-}
-
-/* CARD */
-
-.card{
-
-    background:rgba(255,255,255,0.08);
+    background:
+    linear-gradient(
+    180deg,
+    rgba(255,255,255,0.10),
+    rgba(255,255,255,0.04)
+    );
 
     backdrop-filter:blur(10px);
 
-    border-radius:22px;
+    border:1px solid rgba(255,255,255,0.05);
+
+    border-radius:24px;
 
     overflow:hidden;
 
-    transition:0.3s;
-
-    box-shadow:0 5px 18px rgba(0,0,0,0.3);
-
-    display:flex;
-
-    flex-direction:column;
-
-    height:100%;
-}
-
-.card:hover{
-
-    transform:translateY(-5px);
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.35);
 }
 
 /* IMAGE */
 
-.card img{
+.about-image{
 
     width:100%;
+    height:100%;
 
-    height:220px;
+    position:relative;
 
-    min-height:220px;
+    overflow:hidden;
+}
 
-    max-height:220px;
+.about-image img{
+
+    width:100%;
+    height:100%;
 
     object-fit:cover;
 
-    flex-shrink:0;
+    transition:0.4s ease;
 }
 
-/* CARD CONTENT */
+.about-image:hover img{
 
-.card-content{
+    transform:scale(1.03);
+}
 
-    padding:20px;
+/* OVERLAY */
+
+.overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+    linear-gradient(
+    to top,
+    rgba(0,0,0,0.75),
+    rgba(0,0,0,0.10)
+    );
+}
+
+/* BADGE */
+
+.badge{
+
+    position:absolute;
+
+    top:20px;
+    left:20px;
+
+    background:rgba(255,114,0,0.15);
+
+    border:1px solid rgba(255,114,0,0.25);
+
+    color:#ff7200;
+
+    padding:10px 18px;
+
+    border-radius:50px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    backdrop-filter:blur(10px);
+}
+
+/* CONTENT */
+
+.about-content{
+
+    padding:40px;
+
+    color:white;
 
     display:flex;
-
     flex-direction:column;
+    justify-content:center;
+}
 
-    flex:1;
+/* TAG */
+
+.tag{
+
+    color:#ff7200;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    letter-spacing:3px;
+
+    margin-bottom:14px;
 }
 
 /* TITLE */
 
-.card h2{
+.about-content h1{
 
-    color:#ff7200;
+    font-size:45px;
+
+    line-height:1.2;
 
     margin-bottom:16px;
 
-    font-size:24px;
-
-    min-height:65px;
-
-    display:flex;
-
-    align-items:flex-start;
-}
-
-/* DETAILS */
-
-.card p{
-
-    display:flex;
-    justify-content:space-between;
-
-    color:white;
-
-    margin-bottom:12px;
-
-    font-size:13px;
-}
-
-/* PRICE */
-
-.price{
-
-    justify-content:center !important;
-
-    font-size:20px !important;
-
     font-weight:700;
-
-    margin-top:auto;
-
-    margin-bottom:15px !important;
-
-    color:#ff7200 !important;
 }
 
-/* BUTTON */
+.about-content h1 span{
 
-.book-btn{
+    color:#ff7200;
+}
 
-    width:100%;
+/* LINE */
 
-    margin-top:auto;
+.line{
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    padding:13px;
-
-    border-radius:12px;
-
-    text-decoration:none;
+    width:90px;
+    height:4px;
 
     background:#ff7200;
 
-    color:white;
+    border-radius:10px;
 
-    font-size:14px;
-
-    font-weight:600;
-
-    transition:0.3s;
+    margin-bottom:22px;
 }
 
-.book-btn:hover{
+/* DESCRIPTION */
 
-    background:#ff8c1a;
+.description{
 
-    transform:translateY(-2px);
+    font-size:15px;
+
+    line-height:1.9;
+
+    color:#dddddd;
+
+    margin-bottom:28px;
 }
 
-/* EMPTY */
+/* FEATURES */
 
-.empty{
+.features{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:15px;
+}
+
+/* FEATURE CARD */
+
+.feature-card{
+
+    background:rgba(255,255,255,0.08);
+
+    padding:18px 14px;
+
+    border-radius:16px;
+
     text-align:center;
-    color:white;
-    font-size:22px;
-    padding:60px;
+
+    transition:0.3s ease;
+}
+
+.feature-card:hover{
+
+    transform:translateY(-4px);
+
+    background:rgba(255,255,255,0.12);
+}
+
+.feature-card i{
+
+    font-size:24px;
+
+    color:#ff7200;
+
+    margin-bottom:10px;
+}
+
+.feature-card h3{
+
+    font-size:15px;
+
+    margin-bottom:8px;
+}
+
+.feature-card p{
+
+    font-size:12px;
+
+    line-height:1.6;
+
+    color:#cccccc;
 }
 
 /* RESPONSIVE */
+
+@media(max-width:1000px){
+
+    .about-container{
+
+        grid-template-columns:1fr;
+    }
+
+    .about-image{
+
+        height:320px;
+    }
+
+    .features{
+
+        grid-template-columns:1fr;
+    }
+
+    .about-content{
+
+        padding:28px;
+    }
+
+    .about-content h1{
+
+        font-size:34px;
+    }
+}
 
 @media(max-width:900px){
 
@@ -577,6 +648,7 @@ body{
     }
 
     .menu{
+
         flex-direction:column;
     }
 
@@ -586,22 +658,18 @@ body{
 
         justify-content:center;
     }
-
-    .overview{
-        font-size:45px;
-    }
 }
 
-@media(max-width:600px){
+@media(max-width:700px){
 
     body{
 
-        padding:10px;
+        padding:12px;
     }
 
-    .overview{
+    .navbar{
 
-        font-size:34px;
+        padding:18px;
     }
 
     .menu ul li a{
@@ -609,26 +677,34 @@ body{
         font-size:12px;
     }
 
+    .about-content{
+
+        padding:24px 18px;
+    }
+
+    .about-content h1{
+
+        font-size:28px;
+    }
+
+    .description{
+
+        font-size:13px;
+    }
+
+    .profile-info{
+
+        display:none;
+    }
+
     .dropdown{
 
         width:220px;
     }
-
-    .profile-info{
-        display:none;
-    }
-
-    .card img{
-
-        height:200px;
-
-        min-height:200px;
-
-        max-height:200px;
-    }
 }
 
 </style>
+
 </head>
 
 <body>
@@ -637,7 +713,7 @@ body{
 
     <!-- NAVBAR -->
 
-    <div class="navbar">
+    <nav class="navbar">
 
         <!-- LOGO -->
 
@@ -654,14 +730,14 @@ body{
             <ul>
 
                 <li>
-                    <a href="#" class="active">
+                    <a href="cardetails.php">
                         <i class="fa-solid fa-house"></i>
                         HOME
                     </a>
                 </li>
 
                 <li>
-                    <a href="aboutus2.php">
+                    <a href="#" class="active">
                         <i class="fa-solid fa-circle-info"></i>
                         ABOUT
                     </a>
@@ -694,7 +770,7 @@ body{
                     <div class="profile-info">
 
                         <span class="profile-name">
-                            <?php echo $rows['FNAME']; ?>
+                            <?php echo htmlspecialchars($user['FNAME']); ?>
                         </span>
 
                         <small>Welcome Back</small>
@@ -717,11 +793,11 @@ body{
                         <div>
 
                             <h4>
-                                <?php echo $rows['FNAME']; ?>
+                                <?php echo htmlspecialchars($user['FNAME']); ?>
                             </h4>
 
                             <p>
-                                <?php echo $rows['EMAIL']; ?>
+                                <?php echo htmlspecialchars($user['EMAIL']); ?>
                             </p>
 
                         </div>
@@ -762,82 +838,107 @@ body{
 
         </div>
 
-    </div>
+    </nav>
 
-    <!-- TITLE -->
+    <!-- ABOUT SECTION -->
 
-    <h1 class="overview">
-        Drive In <span>Luxury</span>
-    </h1>
+    <div class="about-container">
 
-    <!-- CARS -->
+        <!-- IMAGE -->
 
-    <div class="car-container">
+        <div class="about-image">
 
-    <?php 
-    if(mysqli_num_rows($cars) > 0){
+            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1600&auto=format&fit=crop">
 
-    while($result = mysqli_fetch_assoc($cars)){
+            <div class="overlay"></div>
 
-    $image = !empty($result['CAR_IMG']) 
-    ? $result['CAR_IMG'] 
-    : 'default.png';
-    ?>
-
-        <!-- CARD -->
-
-        <div class="card">
-
-            <img src="images/<?php echo $image; ?>"
-            onerror="this.src='images/default.png'">
-
-            <div class="card-content">
-
-                <h2>
-                    <?php echo $result['CAR_NAME']; ?>
-                </h2>
-
-                <p>
-                    <span>Fuel Type</span>
-                    <span>
-                        <?php echo $result['FUEL_TYPE']; ?>
-                    </span>
-                </p>
-
-                <p>
-                    <span>Capacity</span>
-                    <span>
-                        <?php echo $result['CAPACITY']; ?> Seats
-                    </span>
-                </p>
-
-                <p class="price">
-                    ₱<?php echo number_format((float)$result['PRICE'],2); ?>/day
-                </p>
-
-                <a class="book-btn"
-                href="booking.php?id=<?php echo $result['CAR_ID']; ?>">
-
-                    <i class="fa-solid fa-calendar-check"></i>
-
-                    Book Now
-
-                </a>
-
+            <div class="badge">
+                Premium Car Rental
             </div>
 
         </div>
 
-    <?php
-        }
-    }else{
-    ?>
+        <!-- CONTENT -->
 
-        <div class="empty">
-            No available cars at the moment.
+        <div class="about-content">
+
+            <div class="tag">
+                ABOUT OUR COMPANY
+            </div>
+
+            <h1>
+                Drive Your <span>Dream Car</span> With Us
+            </h1>
+
+            <div class="line"></div>
+
+            <p class="description">
+
+                At CaRs, we provide stylish, safe, and premium vehicles
+                designed to give every customer a smooth and luxurious journey.
+
+                <br><br>
+
+                Our mission is to deliver modern car rental services with
+                comfort, reliability, and affordable pricing.
+
+            </p>
+
+            <!-- FEATURES -->
+
+            <div class="features">
+
+                <div class="feature-card">
+
+                    <i class="fa-solid fa-car-side"></i>
+
+                    <h3>Premium Cars</h3>
+
+                    <p>
+                        Luxury and modern cars for every travel experience.
+                    </p>
+
+                </div>
+
+                <div class="feature-card">
+
+                    <i class="fa-solid fa-shield-heart"></i>
+
+                    <h3>Safe & Secure</h3>
+
+                    <p>
+                        Well-maintained vehicles with trusted safety features.
+                    </p>
+
+                </div>
+
+                <div class="feature-card">
+
+                    <i class="fa-solid fa-wallet"></i>
+
+                    <h3>Affordable Rates</h3>
+
+                    <p>
+                        Competitive rental pricing with premium quality.
+                    </p>
+
+                </div>
+
+                <div class="feature-card">
+
+                    <i class="fa-solid fa-headset"></i>
+
+                    <h3>24/7 Support</h3>
+
+                    <p>
+                        Friendly support team always ready to assist you.
+                    </p>
+
+                </div>
+
+            </div>
+
         </div>
-
-    <?php } ?>
 
     </div>
 
@@ -856,7 +957,7 @@ function toggleDropdown(){
     .classList.toggle("show");
 }
 
-/* CLOSE WHEN CLICK OUTSIDE */
+/* CLOSE DROPDOWN */
 
 window.onclick = function(e){
 
@@ -866,12 +967,13 @@ window.onclick = function(e){
         document.getElementById("dropdownMenu");
 
         if(dropdown.classList.contains('show')){
+
             dropdown.classList.remove('show');
         }
     }
 }
 
-/* LOGOUT */
+/* LOGOUT CONFIRMATION */
 
 function confirmLogout(){
 
@@ -887,4 +989,5 @@ function confirmLogout(){
 </script>
 
 </body>
+
 </html>

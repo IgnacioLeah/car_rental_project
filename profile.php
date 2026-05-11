@@ -1,17 +1,17 @@
 <?php
 session_start();
-require_once('../connection.php');
+require_once('connection.php');
 
 /* PROTECT PAGE */
 
 if(!isset($_SESSION['email'])){
-    header("Location: ../index.php");
+    header("Location: index.php");
     exit();
 }
 
 $email = $_SESSION['email'];
 
-/* FETCH USER */
+/* GET USER */
 
 $userQuery = mysqli_query(
 $con,
@@ -20,35 +20,107 @@ $con,
 
 $user = mysqli_fetch_assoc($userQuery);
 
-/* SUBMIT FEEDBACK */
+/* UPDATE PROFILE */
 
 $message = "";
 
-if(isset($_POST['submit'])){
+if(isset($_POST['update'])){
 
-    $comment = mysqli_real_escape_string(
+    $fname = mysqli_real_escape_string(
     $con,
-    $_POST['comment']
+    trim($_POST['fname'])
     );
 
-    if(empty($comment)){
+    $lname = mysqli_real_escape_string(
+    $con,
+    trim($_POST['lname'])
+    );
 
-        $message = "Please enter feedback.";
+    $newEmail = mysqli_real_escape_string(
+    $con,
+    trim($_POST['email'])
+    );
+
+    $password = trim($_POST['password']);
+
+    /* CURRENT DATA */
+
+    $currentFname = $user['FNAME'];
+    $currentLname = $user['LNAME'];
+    $currentEmail = $user['EMAIL'];
+
+    /* VALIDATION */
+
+    if(empty($fname) ||
+       empty($lname) ||
+       empty($newEmail)){
+
+        $message = "Please fill all required fields.";
 
     }else{
 
-        $sql = "INSERT INTO feedback
-        (EMAIL, COMMENT)
-        VALUES
-        ('$email','$comment')";
+        /* CHECK IF NOTHING CHANGED */
 
-        if(mysqli_query($con,$sql)){
+        if(
+            $fname == $currentFname &&
+            $lname == $currentLname &&
+            $newEmail == $currentEmail &&
+            empty($password)
+        ){
 
-            $message = "Feedback Sent Successfully!";
+            $message = "No changes detected.";
 
         }else{
 
-            $message = "Error submitting feedback.";
+            /* UPDATE WITH PASSWORD */
+
+            if(!empty($password)){
+
+                $update = mysqli_query(
+                $con,
+                "UPDATE users SET
+                FNAME='$fname',
+                LNAME='$lname',
+                EMAIL='$newEmail',
+                PASSWORD='$password'
+                WHERE EMAIL='$email'"
+                );
+
+            }else{
+
+                /* UPDATE WITHOUT PASSWORD */
+
+                $update = mysqli_query(
+                $con,
+                "UPDATE users SET
+                FNAME='$fname',
+                LNAME='$lname',
+                EMAIL='$newEmail'
+                WHERE EMAIL='$email'"
+                );
+            }
+
+            if($update){
+
+                $_SESSION['email'] = $newEmail;
+
+                $email = $newEmail;
+
+                $message = "Profile Updated Successfully!";
+
+                /* REFRESH USER */
+
+                $userQuery = mysqli_query(
+                $con,
+                "SELECT * FROM users WHERE EMAIL='$email'"
+                );
+
+                $user = mysqli_fetch_assoc($userQuery);
+
+            }else{
+
+                $message = "Failed to update profile.";
+            }
         }
     }
 }
@@ -61,23 +133,16 @@ if(isset($_POST['submit'])){
 
 <meta charset="UTF-8">
 
-<meta http-equiv="X-UA-Compatible"
-content="IE=edge">
-
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>Feedback | CaRs</title>
-
-<!-- GOOGLE FONT -->
+<title>Profile Settings | CaRs</title>
 
 <link rel="preconnect"
 href="https://fonts.googleapis.com">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
 rel="stylesheet">
-
-<!-- FONT AWESOME -->
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
@@ -101,22 +166,23 @@ body{
 
     background:
     linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.82)),
-    url("../images/carbg2.jpg");
+    url("images/carbg2.jpg");
 
     background-size:cover;
     background-position:center;
     background-attachment:fixed;
 
-    padding:20px;
-
     overflow-x:hidden;
+
+    padding:20px;
 }
 
 /* WRAPPER */
 
 .main-wrapper{
 
-    max-width:1400px;
+    width:100%;
+    max-width:1300px;
 
     margin:auto;
 }
@@ -139,10 +205,10 @@ body{
 
     border-radius:18px;
 
-    margin-bottom:40px;
+    margin-bottom:30px;
 
     position:sticky;
-    top:15px;
+    top:10px;
 
     z-index:999;
 
@@ -158,8 +224,6 @@ body{
     font-size:34px;
 
     font-weight:700;
-
-    letter-spacing:1px;
 }
 
 .logo span{
@@ -173,6 +237,7 @@ body{
 
     display:flex;
     align-items:center;
+
     gap:28px;
 }
 
@@ -204,6 +269,7 @@ body{
 
     display:flex;
     align-items:center;
+
     gap:8px;
 }
 
@@ -245,9 +311,9 @@ body{
 .profile-btn:hover{
 
     background:#1a1a1a;
-
-    transform:translateY(-2px);
 }
+
+/* PROFILE IMAGE */
 
 .circle{
 
@@ -267,8 +333,6 @@ body{
 
     display:flex;
     flex-direction:column;
-
-    line-height:1.3;
 }
 
 .profile-name{
@@ -285,13 +349,6 @@ body{
     color:#bbbbbb;
 
     font-size:11px;
-}
-
-.arrow{
-
-    color:#999;
-
-    font-size:12px;
 }
 
 /* DROPDOWN */
@@ -313,30 +370,23 @@ body{
 
     border:1px solid rgba(255,255,255,0.08);
 
-    box-shadow:
-    0 15px 40px rgba(0,0,0,0.55);
-
     opacity:0;
-
     visibility:hidden;
 
     transform:translateY(10px);
 
     transition:0.3s ease;
-}
 
-/* SHOW */
+    z-index:999;
+}
 
 .dropdown.show{
 
     opacity:1;
-
     visibility:visible;
 
     transform:translateY(0);
 }
-
-/* HEADER */
 
 .dropdown-header{
 
@@ -348,8 +398,6 @@ body{
     padding:18px;
 
     background:#181818;
-
-    border-bottom:1px solid rgba(255,255,255,0.06);
 }
 
 .dropdown-img{
@@ -360,8 +408,6 @@ body{
     border-radius:50%;
 
     border:2px solid #ff7200;
-
-    object-fit:cover;
 }
 
 .dropdown-header h4{
@@ -369,8 +415,6 @@ body{
     color:white;
 
     font-size:15px;
-
-    margin-bottom:3px;
 }
 
 .dropdown-header p{
@@ -379,8 +423,6 @@ body{
 
     font-size:11px;
 }
-
-/* LINKS */
 
 .dropdown-links{
 
@@ -394,7 +436,7 @@ body{
 
     gap:12px;
 
-    padding:14px 15px;
+    padding:14px;
 
     border-radius:12px;
 
@@ -404,8 +446,6 @@ body{
 
     font-size:13px;
 
-    font-weight:500;
-
     transition:0.3s;
 }
 
@@ -414,163 +454,46 @@ body{
     background:#ff7200;
 }
 
-/* CONTAINER */
+/* PROFILE CONTAINER */
 
-.feedback-container{
+.profile-container{
 
-    display:grid;
+    width:100%;
 
-    grid-template-columns:1fr 1fr;
+    max-width:700px;
 
-    gap:30px;
-}
-
-/* LEFT PANEL */
-
-.feedback-left{
+    margin:auto;
 
     background:rgba(255,255,255,0.08);
 
-    backdrop-filter:blur(12px);
+    backdrop-filter:blur(10px);
 
     border-radius:24px;
 
-    padding:45px;
+    padding:40px;
 
     border:1px solid rgba(255,255,255,0.05);
-
-    box-shadow:
-    0 10px 30px rgba(0,0,0,0.35);
-}
-
-/* PROFILE */
-
-.profile-image{
-
-    width:95px;
-    height:95px;
-
-    margin-bottom:25px;
-}
-
-.profile-image img{
-
-    width:100%;
-    height:100%;
-
-    border-radius:50%;
-
-    object-fit:cover;
-
-    border:3px solid #ff7200;
 }
 
 /* TITLE */
 
-.feedback-left h1{
+.profile-title{
 
-    color:white;
-
-    font-size:42px;
-
-    line-height:1.2;
-
-    margin-bottom:18px;
-}
-
-/* DESCRIPTION */
-
-.feedback-left p{
-
-    color:#cccccc;
-
-    font-size:14px;
-
-    line-height:1.8;
+    text-align:center;
 
     margin-bottom:30px;
 }
 
-/* FEATURE */
-
-.feature-box{
-
-    display:flex;
-    align-items:center;
-
-    gap:14px;
-
-    background:rgba(255,255,255,0.06);
-
-    padding:16px 18px;
-
-    border-radius:16px;
-
-    margin-bottom:15px;
-}
-
-.feature-box i{
-
-    width:42px;
-    height:42px;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    border-radius:50%;
-
-    background:#ff7200;
+.profile-title h1{
 
     color:white;
 
-    font-size:16px;
-}
-
-.feature-box span{
-
-    color:white;
-
-    font-size:14px;
-
-    font-weight:500;
-}
-
-/* RIGHT PANEL */
-
-.feedback-right{
-
-    background:rgba(255,255,255,0.08);
-
-    backdrop-filter:blur(12px);
-
-    border-radius:24px;
-
-    padding:45px;
-
-    border:1px solid rgba(255,255,255,0.05);
-
-    box-shadow:
-    0 10px 30px rgba(0,0,0,0.35);
-}
-
-/* HEADER */
-
-.form-header{
-
-    margin-bottom:25px;
-}
-
-.form-header h2{
-
-    color:white;
-
-    font-size:32px;
+    font-size:34px;
 
     margin-bottom:8px;
 }
 
-.form-header p{
+.profile-title p{
 
     color:#bbbbbb;
 
@@ -579,7 +502,7 @@ body{
 
 /* MESSAGE */
 
-.message-box{
+.message{
 
     background:#ff7200;
 
@@ -589,11 +512,11 @@ body{
 
     border-radius:14px;
 
+    text-align:center;
+
     margin-bottom:20px;
 
     font-size:14px;
-
-    text-align:center;
 }
 
 /* INPUT GROUP */
@@ -611,19 +534,19 @@ body{
 
     margin-bottom:10px;
 
-    font-size:13px;
+    font-size:14px;
 
     font-weight:500;
 }
 
-/* INPUT ICON */
+/* INPUT BOX */
 
-.input-icon{
+.input-box{
 
     position:relative;
 }
 
-.input-icon i{
+.input-box i{
 
     position:absolute;
 
@@ -635,14 +558,25 @@ body{
     color:#ff7200;
 }
 
+.input-box .toggle-password{
+
+    position:absolute;
+
+    right:15px;
+    left:auto;
+
+    cursor:pointer;
+
+    color:#cccccc;
+}
+
 /* INPUT */
 
-.input-group input,
-.input-group textarea{
+.input-box input{
 
     width:100%;
 
-    padding:15px;
+    padding:15px 45px;
 
     border:none;
 
@@ -661,21 +595,14 @@ body{
     transition:0.3s ease;
 }
 
-.input-group input{
+.input-box input:focus{
 
-    padding-left:45px;
-}
-
-.input-group textarea{
-
-    min-height:160px;
-
-    resize:none;
+    border-color:#ff7200;
 }
 
 /* BUTTON */
 
-button{
+.update-btn{
 
     width:100%;
 
@@ -700,31 +627,17 @@ button{
 
     cursor:pointer;
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    gap:10px;
-
     transition:0.3s ease;
 }
 
-button:hover{
+.update-btn:hover{
 
     transform:translateY(-2px);
 }
 
 /* RESPONSIVE */
 
-@media(max-width:1000px){
-
-    .feedback-container{
-
-        grid-template-columns:1fr;
-    }
-}
-
-@media(max-width:900px){
+@media(max-width:850px){
 
     .navbar{
 
@@ -746,27 +659,21 @@ button:hover{
     }
 }
 
-@media(max-width:700px){
+@media(max-width:650px){
 
     body{
 
-        padding:12px;
+        padding:10px;
     }
 
-    .feedback-left,
-    .feedback-right{
+    .profile-container{
 
-        padding:28px;
+        padding:25px 18px;
     }
 
-    .feedback-left h1{
+    .profile-title h1{
 
-        font-size:32px;
-    }
-
-    .form-header h2{
-
-        font-size:26px;
+        font-size:28px;
     }
 
     .profile-info{
@@ -801,30 +708,42 @@ button:hover{
             <ul>
 
                 <li>
-                    <a href="../cardetails.php">
+                    <a href="cardetails.php">
+
                         <i class="fa-solid fa-house"></i>
+
                         HOME
+
                     </a>
                 </li>
 
                 <li>
-                    <a href="../aboutus2.php">
+                    <a href="aboutus2.php">
+
                         <i class="fa-solid fa-circle-info"></i>
+
                         ABOUT
+
                     </a>
                 </li>
 
                 <li>
-                    <a href="../contactus2.php">
+                    <a href="contactus2.php">
+
                         <i class="fa-solid fa-envelope"></i>
+
                         CONTACT
+
                     </a>
                 </li>
 
                 <li>
-                    <a href="#" class="active">
+                    <a href="feedback/Feedbacks.php">
+
                         <i class="fa-solid fa-star"></i>
+
                         FEEDBACK
+
                     </a>
                 </li>
 
@@ -837,7 +756,7 @@ button:hover{
                 <div class="profile-btn"
                 onclick="toggleDropdown()">
 
-                    <img src="../images/profile.png"
+                    <img src="images/profile.png"
                     class="circle">
 
                     <div class="profile-info">
@@ -850,7 +769,7 @@ button:hover{
 
                     </div>
 
-                    <i class="fa-solid fa-chevron-down arrow"></i>
+                    <i class="fa-solid fa-chevron-down"></i>
 
                 </div>
 
@@ -861,13 +780,13 @@ button:hover{
 
                     <div class="dropdown-header">
 
-                        <img src="../images/profile.png"
+                        <img src="images/profile.png"
                         class="dropdown-img">
 
                         <div>
 
                             <h4>
-                                <?php echo htmlspecialchars($user['FNAME']); ?>
+                                <?php echo htmlspecialchars($user['FNAME']." ".$user['LNAME']); ?>
                             </h4>
 
                             <p>
@@ -880,7 +799,7 @@ button:hover{
 
                     <div class="dropdown-links">
 
-                        <a href="../profile.php">
+                        <a href="#">
 
                             <i class="fa-regular fa-user"></i>
 
@@ -888,7 +807,7 @@ button:hover{
 
                         </a>
 
-                        <a href="../bookinstatus.php">
+                        <a href="bookinstatus.php">
 
                             <i class="fa-solid fa-clipboard-list"></i>
 
@@ -915,133 +834,124 @@ button:hover{
 
     </nav>
 
-    <!-- FEEDBACK CONTAINER -->
+    <!-- PROFILE SETTINGS -->
 
-    <div class="feedback-container">
+    <div class="profile-container">
 
-        <!-- LEFT -->
+        <div class="profile-title">
 
-        <div class="feedback-left">
-
-            <div class="profile-image">
-
-                <img src="../images/profile.png">
-
-            </div>
-
-            <h1>
-                Share Your Experience
-            </h1>
+            <h1>Account Settings</h1>
 
             <p>
-                Your feedback helps us improve our
-                car rental services and provide
-                better customer experiences.
+                Update your profile information
             </p>
 
-            <div class="feature-box">
-
-                <i class="fa-solid fa-car"></i>
-
-                <span>
-                    Premium Car Rental Service
-                </span>
-
-            </div>
-
-            <div class="feature-box">
-
-                <i class="fa-solid fa-star"></i>
-
-                <span>
-                    Trusted By Many Customers
-                </span>
-
-            </div>
-
-            <div class="feature-box">
-
-                <i class="fa-solid fa-headset"></i>
-
-                <span>
-                    24/7 Customer Support
-                </span>
-
-            </div>
-
         </div>
 
-        <!-- RIGHT -->
+        <?php if(!empty($message)){ ?>
 
-        <div class="feedback-right">
+            <div class="message">
 
-            <div class="form-header">
-
-                <h2>Give Your Feedback</h2>
-
-                <p>
-                    We would love to hear your thoughts.
-                </p>
+                <?php echo $message; ?>
 
             </div>
 
-            <?php if(!empty($message)){ ?>
+        <?php } ?>
 
-                <div class="message-box">
+        <form method="POST">
 
-                    <?php echo $message; ?>
+            <!-- FIRST NAME -->
 
-                </div>
+            <div class="input-group">
 
-            <?php } ?>
+                <label>First Name</label>
 
-            <form method="POST">
+                <div class="input-box">
 
-                <!-- EMAIL -->
+                    <i class="fa-solid fa-user"></i>
 
-                <div class="input-group">
-
-                    <label>Email</label>
-
-                    <div class="input-icon">
-
-                        <i class="fa-solid fa-envelope"></i>
-
-                        <input type="email"
-                        value="<?php echo htmlspecialchars($email); ?>"
-                        disabled>
-
-                    </div>
+                    <input type="text"
+                    name="fname"
+                    value="<?php echo htmlspecialchars($user['FNAME']); ?>"
+                    required>
 
                 </div>
 
-                <!-- FEEDBACK -->
+            </div>
 
-                <div class="input-group">
+            <!-- LAST NAME -->
 
-                    <label>Your Feedback</label>
+            <div class="input-group">
 
-                    <textarea
-                    name="comment"
-                    placeholder="Write something..."
-                    required></textarea>
+                <label>Last Name</label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-user"></i>
+
+                    <input type="text"
+                    name="lname"
+                    value="<?php echo htmlspecialchars($user['LNAME']); ?>"
+                    required>
 
                 </div>
 
-                <!-- BUTTON -->
+            </div>
 
-                <button type="submit"
-                name="submit">
+            <!-- EMAIL -->
 
-                    <i class="fa-solid fa-paper-plane"></i>
+            <div class="input-group">
 
-                    Submit Feedback
+                <label>Email</label>
 
-                </button>
+                <div class="input-box">
 
-            </form>
+                    <i class="fa-solid fa-envelope"></i>
 
-        </div>
+                    <input type="email"
+                    name="email"
+                    value="<?php echo htmlspecialchars($user['EMAIL']); ?>"
+                    required>
+
+                </div>
+
+            </div>
+
+            <!-- PASSWORD -->
+
+            <div class="input-group">
+
+                <label>New Password</label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <input type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Enter new password">
+
+                    <i class="fa-solid fa-eye toggle-password"
+                    id="togglePassword"></i>
+
+                </div>
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <button type="submit"
+            name="update"
+            class="update-btn">
+
+                <i class="fa-solid fa-pen"></i>
+
+                Update Profile
+
+            </button>
+
+        </form>
 
     </div>
 
@@ -1076,7 +986,28 @@ window.onclick = function(e){
     }
 }
 
-/* LOGOUT CONFIRM */
+/* TOGGLE PASSWORD */
+
+const togglePassword =
+document.getElementById("togglePassword");
+
+const password =
+document.getElementById("password");
+
+togglePassword.addEventListener("click", function(){
+
+    const type =
+    password.getAttribute("type") === "password"
+    ? "text"
+    : "password";
+
+    password.setAttribute("type", type);
+
+    this.classList.toggle("fa-eye");
+    this.classList.toggle("fa-eye-slash");
+});
+
+/* LOGOUT */
 
 function confirmLogout(){
 
@@ -1086,7 +1017,7 @@ function confirmLogout(){
     if(confirmAction){
 
         window.location.href =
-        "../index.php";
+        "index.php";
     }
 }
 

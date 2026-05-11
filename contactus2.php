@@ -3,6 +3,7 @@ session_start();
 require_once('connection.php');
 
 /* CHECK LOGIN */
+
 if (!isset($_SESSION['email'])) {
     header("Location: index.php");
     exit();
@@ -11,6 +12,7 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 
 /* GET USER DATA */
+
 $sql = "SELECT * FROM users WHERE EMAIL='$email'";
 $result = mysqli_query($con, $sql);
 
@@ -21,139 +23,753 @@ if (!$result) {
 $user = mysqli_fetch_assoc($result);
 
 /* SAFE CHECK */
+
 if (!$user) {
+
     $fullname = "Unknown User";
+
 } else {
+
     $fullname = $user['FNAME'] . " " . $user['LNAME'];
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>CaRs | Contact</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+<!-- GOOGLE FONT -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- FONT AWESOME -->
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
-body{background:linear-gradient(135deg,#1e3c72,#2a5298);}
-.contact{min-height:100vh;padding:50px;display:flex;justify-content:center;align-items:center;}
-.container{display:flex;gap:40px;width:100%;max-width:1100px;}
-.contactInfo,.contactForm{width:50%;}
-.box{display:flex;align-items:center;margin:10px 0;padding:15px;background:rgba(255,255,255,0.1);border-radius:10px;}
-.icon{width:50px;height:50px;background:#00c6ff;display:flex;justify-content:center;align-items:center;border-radius:50%;color:#fff;margin-right:10px;}
-.text h3{color:#00c6ff;}
-.text p{color:#fff;}
-.contactForm{padding:25px;background:rgba(255,255,255,0.1);border-radius:10px;}
-.contactForm h2{color:#fff;margin-bottom:15px;}
-.inputBox{margin-top:10px;position:relative;}
-.inputBox input,.inputBox textarea{
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+}
+
+/* BODY */
+
+body{
+
+    min-height:100vh;
+
+    background:
+    linear-gradient(rgba(0,0,0,0.80), rgba(0,0,0,0.80)),
+    url("images/carbg2.jpg");
+
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+
+    padding:20px;
+
+    overflow-x:hidden;
+}
+
+/* WRAPPER */
+
+.main-wrapper{
+
+    max-width:1400px;
+
+    margin:auto;
+}
+
+/* NAVBAR */
+
+.navbar{
+
     width:100%;
-    padding:10px;
-    border:none;
-    background:rgba(255,255,255,0.2);
-    color:#fff;
-    border-radius:5px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:14px 35px;
+
+    background:rgba(10,10,10,0.82);
+
+    backdrop-filter:blur(10px);
+
+    border-radius:18px;
+
+    margin-bottom:40px;
+
+    position:sticky;
+    top:15px;
+
+    z-index:999;
+
+    border:1px solid rgba(255,255,255,0.05);
 }
-.inputBox span{
-    position:absolute;
-    left:10px;
-    top:10px;
-    color:#ccc;
-    font-size:14px;
+
+/* LOGO */
+
+.logo{
+
+    color:#ff7200;
+
+    font-size:34px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
 }
-.inputBox input[type="submit"]{
-    background:#00c6ff;
-    cursor:pointer;
+
+.logo span{
+    color:white;
 }
-.home-btn{
-    display:inline-block;
-    margin-top:15px;
-    padding:10px 20px;
-    background:#ff7b00;
-    color:#fff;
+
+/* MENU */
+
+.menu{
+
+    display:flex;
+    align-items:center;
+    gap:28px;
+}
+
+.menu ul{
+
+    display:flex;
+    align-items:center;
+
+    gap:12px;
+
+    list-style:none;
+}
+
+.menu ul li a{
+
     text-decoration:none;
-    border-radius:5px;
+
+    color:#d9d9d9;
+
+    font-size:14px;
+
+    font-weight:500;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    transition:0.3s ease;
+
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
+
+.menu ul li a:hover,
+.menu ul li a.active{
+
+    background:#161616;
+
+    color:#ff7b00;
+}
+
+/* PROFILE */
+
+.profile{
+
+    position:relative;
+}
+
+.profile-btn{
+
+    display:flex;
+    align-items:center;
+
+    gap:12px;
+
+    padding:8px 12px;
+
+    background:#111;
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    border-radius:50px;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+}
+
+.profile-btn:hover{
+
+    background:#1a1a1a;
+
+    transform:translateY(-2px);
+}
+
+/* PROFILE IMAGE */
+
+.circle{
+
+    width:46px;
+    height:46px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:2px solid #ff7200;
+}
+
+/* PROFILE INFO */
+
+.profile-info{
+
+    display:flex;
+    flex-direction:column;
+
+    line-height:1.3;
+}
+
+.profile-name{
+
+    color:white;
+
+    font-size:14px;
+
+    font-weight:600;
+}
+
+.profile-info small{
+
+    color:#bbbbbb;
+
+    font-size:11px;
+}
+
+/* ARROW */
+
+.arrow{
+
+    color:#999;
+
+    font-size:12px;
+}
+
+/* DROPDOWN */
+
+.dropdown{
+
+    position:absolute;
+
+    top:78px;
+    right:0;
+
+    width:260px;
+
+    background:#111;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,0.55);
+
+    opacity:0;
+    visibility:hidden;
+
+    transform:translateY(10px);
+
+    transition:0.3s ease;
+}
+
+.dropdown.show{
+
+    opacity:1;
+
+    visibility:visible;
+
+    transform:translateY(0);
+}
+
+/* HEADER */
+
+.dropdown-header{
+
+    display:flex;
+    align-items:center;
+
+    gap:12px;
+
+    padding:18px;
+
+    background:#181818;
+
+    border-bottom:1px solid rgba(255,255,255,0.06);
+}
+
+.dropdown-img{
+
+    width:55px;
+    height:55px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:2px solid #ff7200;
+}
+
+.dropdown-header h4{
+
+    color:white;
+
+    font-size:15px;
+
+    margin-bottom:3px;
+}
+
+.dropdown-header p{
+
+    color:#aaaaaa;
+
+    font-size:11px;
+}
+
+/* LINKS */
+
+.dropdown-links{
+
+    padding:10px;
+}
+
+.dropdown-links a{
+
+    display:flex;
+    align-items:center;
+
+    gap:12px;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:13px;
+
+    transition:0.3s;
+}
+
+.dropdown-links a:hover{
+
+    background:#ff7200;
+}
+
+/* CONTACT SECTION */
+
+.contact-section{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:25px;
+}
+
+/* CARD */
+
+.contact-card{
+
+    background:rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(10px);
+
+    border-radius:24px;
+
+    padding:40px 30px;
+
+    text-align:center;
+
+    border:1px solid rgba(255,255,255,0.05);
+
+    transition:0.3s;
+}
+
+.contact-card:hover{
+
+    transform:translateY(-5px);
+
+    background:rgba(255,255,255,0.10);
+}
+
+/* ICON */
+
+.contact-icon{
+
+    width:75px;
+    height:75px;
+
+    margin:auto;
+
+    margin-bottom:20px;
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:#ff7200;
+
+    color:white;
+
+    font-size:28px;
+}
+
+/* TITLE */
+
+.contact-card h2{
+
+    color:white;
+
+    font-size:24px;
+
+    margin-bottom:12px;
+}
+
+/* TEXT */
+
+.contact-card p{
+
+    color:#cccccc;
+
+    font-size:14px;
+
+    line-height:1.7;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1000px){
+
+    .contact-section{
+
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:900px){
+
+    .navbar{
+
+        flex-direction:column;
+
+        gap:15px;
+    }
+
+    .menu{
+
+        flex-direction:column;
+    }
+
+    .menu ul{
+
+        flex-wrap:wrap;
+
+        justify-content:center;
+    }
+}
+
+@media(max-width:600px){
+
+    body{
+
+        padding:10px;
+    }
+
+    .contact-card{
+
+        padding:30px 20px;
+    }
+
+    .contact-card h2{
+
+        font-size:20px;
+    }
+
+    .dropdown{
+
+        width:220px;
+    }
+
+    .profile-info{
+
+        display:none;
+    }
+}
+
 </style>
+
 </head>
 
 <body>
 
-<section class="contact">
+<div class="main-wrapper">
 
-<div class="container">
+    <!-- NAVBAR -->
 
-    <!-- LEFT -->
-    <div class="contactInfo">
+    <nav class="navbar">
 
-        <div class="box">
-            <div class="icon"><i class="fas fa-map-marker-alt"></i></div>
-            <div class="text">
-                <h3>Address</h3>
-                <p>Cebu City, Philippines</p>
-            </div>
+        <!-- LOGO -->
+
+        <div class="logo">
+            Ca<span>Rs</span>
         </div>
 
-        <div class="box">
-            <div class="icon"><i class="fas fa-phone-alt"></i></div>
-            <div class="text">
-                <h3>Phone</h3>
-                <p>+63 912 345 6789</p>
+        <!-- MENU -->
+
+        <div class="menu">
+
+            <ul>
+
+                <li>
+                    <a href="cardetails.php">
+                        <i class="fa-solid fa-house"></i>
+                        HOME
+                    </a>
+                </li>
+
+                <li>
+                    <a href="aboutus2.php">
+                        <i class="fa-solid fa-circle-info"></i>
+                        ABOUT
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="active">
+                        <i class="fa-solid fa-envelope"></i>
+                        CONTACT
+                    </a>
+                </li>
+
+                <li>
+                    <a href="feedback/Feedbacks.php">
+                        <i class="fa-solid fa-star"></i>
+                        FEEDBACK
+                    </a>
+                </li>
+
+            </ul>
+
+            <!-- PROFILE -->
+
+            <div class="profile">
+
+                <div class="profile-btn" onclick="toggleDropdown()">
+
+                    <img src="images/profile.png" class="circle">
+
+                    <div class="profile-info">
+
+                        <span class="profile-name">
+                            <?php echo htmlspecialchars($user['FNAME']); ?>
+                        </span>
+
+                        <small>Welcome Back</small>
+
+                    </div>
+
+                    <i class="fa-solid fa-chevron-down arrow"></i>
+
+                </div>
+
+                <!-- DROPDOWN -->
+
+                <div class="dropdown" id="dropdownMenu">
+
+                    <div class="dropdown-header">
+
+                        <img src="images/profile.png"
+                        class="dropdown-img">
+
+                        <div>
+
+                            <h4>
+                                <?php echo htmlspecialchars($fullname); ?>
+                            </h4>
+
+                            <p>
+                                <?php echo htmlspecialchars($email); ?>
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="dropdown-links">
+
+                        <a href="profile.php">
+
+                            <i class="fa-regular fa-user"></i>
+
+                            Account Settings
+
+                        </a>
+
+                        <a href="bookinstatus.php">
+
+                            <i class="fa-solid fa-clipboard-list"></i>
+
+                            Booking Status
+
+                        </a>
+
+                        <a href="#" onclick="confirmLogout()">
+
+                            <i class="fa-solid fa-right-from-bracket"></i>
+
+                            Logout
+
+                        </a>
+
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
 
-        <div class="box">
-            <div class="icon"><i class="fas fa-envelope"></i></div>
-            <div class="text">
-                <h3>Email</h3>
-                <p>contact@cars.com</p>
+    </nav>
+
+    <!-- CONTACT CARDS -->
+
+    <div class="contact-section">
+
+        <!-- ADDRESS -->
+
+        <div class="contact-card">
+
+            <div class="contact-icon">
+
+                <i class="fas fa-map-marker-alt"></i>
+
             </div>
+
+            <h2>Address</h2>
+
+            <p>
+                Cebu City, Philippines
+            </p>
+
         </div>
 
-    </div>
+        <!-- PHONE -->
 
-    <!-- RIGHT -->
-    <div class="contactForm">
-        <form onsubmit="sendMsg(event)">
-            <h2>Send Message</h2>
+        <div class="contact-card">
 
-            <!-- FULLNAME -->
-            <div class="inputBox">
-                <input type="text" value="<?php echo htmlspecialchars($fullname); ?>" readonly>
+            <div class="contact-icon">
+
+                <i class="fas fa-phone-alt"></i>
+
             </div>
 
-            <!-- EMAIL -->
-            <div class="inputBox">
-                <input type="email" value="<?php echo htmlspecialchars($email); ?>" readonly>
+            <h2>Phone</h2>
+
+            <p>
+                +63 912 345 6789
+            </p>
+
+        </div>
+
+        <!-- EMAIL -->
+
+        <div class="contact-card">
+
+            <div class="contact-icon">
+
+                <i class="fas fa-envelope"></i>
+
             </div>
 
-            <!-- MESSAGE -->
-            <div class="inputBox">
-                <textarea required></textarea>
-            </div>
+            <h2>Email</h2>
 
-            <div class="inputBox">
-                <input type="submit" value="Send">
-            </div>
+            <p>
+                contact@cars.com
+            </p>
 
-            <a href="cardetails.php" class="home-btn">Go To Home</a>
-        </form>
+        </div>
+
     </div>
 
 </div>
 
-</section>
+<!-- SCRIPT -->
 
 <script>
-function sendMsg(e){
-    e.preventDefault();
-    alert("Message sent! (Frontend only)");
+
+/* TOGGLE DROPDOWN */
+
+function toggleDropdown(){
+
+    document
+    .getElementById("dropdownMenu")
+    .classList.toggle("show");
 }
+
+/* CLOSE DROPDOWN */
+
+window.onclick = function(e){
+
+    if(!e.target.closest('.profile')){
+
+        let dropdown =
+        document.getElementById("dropdownMenu");
+
+        if(dropdown.classList.contains('show')){
+
+            dropdown.classList.remove('show');
+        }
+    }
+}
+
+/* LOGOUT CONFIRMATION */
+
+function confirmLogout(){
+
+    let confirmAction =
+    confirm("Are you sure you want to logout?");
+
+    if(confirmAction){
+
+        window.location.href = "index.php";
+    }
+}
+
 </script>
 
 </body>
+
 </html>

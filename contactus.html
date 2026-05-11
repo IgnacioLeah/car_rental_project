@@ -1,265 +1,862 @@
 <!DOCTYPE html>
-
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>CaRs | Contact</title>
+<meta http-equiv="X-UA-Compatible"
+content="IE=edge">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>CaRs | Contact Us</title>
+
+<!-- GOOGLE FONT -->
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<!-- FONT AWESOME -->
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 
 <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family: Arial, sans-serif;
+    font-family:'Poppins', sans-serif;
 }
+
+/* BODY */
 
 body{
-    background: linear-gradient(135deg,#1e3c72,#2a5298);
-}
 
-/* SECTION */
-.contact{
     min-height:100vh;
-    padding:50px 100px;
+
+    background:
+    linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.82)),
+    url("images/carbg2.jpg");
+
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+
+    padding:18px;
+
+    overflow-x:hidden;
+}
+
+/* WRAPPER */
+
+.contact-wrapper{
+
+    width:100%;
+    max-width:1350px;
+
+    margin:auto;
+}
+
+/* NAVBAR */
+
+.navbar{
+
+    width:100%;
+
     display:flex;
-    justify-content:center;
+    justify-content:space-between;
     align-items:center;
+
+    padding:14px 30px;
+
+    background:rgba(10,10,10,0.82);
+
+    backdrop-filter:blur(12px);
+
+    border-radius:20px;
+
+    margin-bottom:22px;
+
+    border:1px solid rgba(255,255,255,0.05);
 }
 
-/* TITLE */
-.content{
-    width:100%;
-    text-align:center;
-    margin-bottom:30px;
+/* LOGO */
+
+.logo{
+
+    color:#ff7200;
+
+    font-size:34px;
+
+    font-weight:700;
 }
 
-.content h1{
-    color:#fff;
-    font-size:40px;
-    letter-spacing:2px;
+.logo span{
+
+    color:white;
 }
 
-/* MAIN CONTAINER */
-.container{
-    width:100%;
+/* MENU */
+
+.menu{
+
     display:flex;
-    justify-content:center;
-    gap:40px;
+    align-items:center;
+
+    gap:14px;
+
+    flex-wrap:wrap;
+}
+
+.menu a{
+
+    text-decoration:none;
+
+    color:#d9d9d9;
+
+    font-size:14px;
+
+    font-weight:500;
+
+    padding:12px 18px;
+
+    border-radius:14px;
+
+    transition:0.3s ease;
+
+    display:flex;
+    align-items:center;
+
+    gap:8px;
+}
+
+.menu a:hover,
+.menu a.active{
+
+    background:#161616;
+
+    color:#ff7200;
+}
+
+/* CONTACT CARD */
+
+.contact-card{
+
+    width:100%;
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    background:
+    linear-gradient(
+    180deg,
+    rgba(255,255,255,0.10),
+    rgba(255,255,255,0.04)
+    );
+
+    backdrop-filter:blur(12px);
+
+    border-radius:28px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(255,255,255,0.05);
+
+    box-shadow:
+    0 15px 35px rgba(0,0,0,0.35);
 }
 
 /* LEFT SIDE */
-.contactInfo{
-    width:40%;
+
+.contact-info{
+
+    position:relative;
+
+    padding:50px;
+
+    background:
+    linear-gradient(
+    rgba(0,0,0,0.55),
+    rgba(0,0,0,0.55)
+    ),
+    url("https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1400&auto=format&fit=crop");
+
+    background-size:cover;
+    background-position:center;
+
+    color:white;
+
     display:flex;
     flex-direction:column;
+    justify-content:center;
 }
 
-.box{
+/* TAG */
+
+.tag{
+
+    color:#ff7200;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    letter-spacing:3px;
+
+    margin-bottom:16px;
+}
+
+/* TITLE */
+
+.contact-info h1{
+
+    font-size:48px;
+
+    line-height:1.2;
+
+    margin-bottom:18px;
+}
+
+.contact-info h1 span{
+
+    color:#ff7200;
+}
+
+/* LINE */
+
+.line{
+
+    width:90px;
+    height:4px;
+
+    background:#ff7200;
+
+    border-radius:10px;
+
+    margin-bottom:25px;
+}
+
+/* DESCRIPTION */
+
+.description{
+
+    color:#dddddd;
+
+    font-size:15px;
+
+    line-height:1.9;
+
+    margin-bottom:35px;
+}
+
+/* INFO BOX */
+
+.info-box{
+
     display:flex;
     align-items:center;
-    padding:20px;
-    margin:10px 0;
-    background:rgba(255,255,255,0.1);
-    border-radius:10px;
+
+    gap:16px;
+
+    padding:18px;
+
+    margin-bottom:18px;
+
+    background:rgba(255,255,255,0.08);
+
+    border-radius:18px;
+
     backdrop-filter:blur(10px);
+
+    transition:0.3s ease;
 }
 
-.icon{
-    min-width:50px;
-    height:50px;
-    background:#00c6ff;
+.info-box:hover{
+
+    transform:translateY(-3px);
+
+    background:rgba(255,255,255,0.12);
+}
+
+/* ICON */
+
+.info-icon{
+
+    width:55px;
+    height:55px;
+
     display:flex;
     justify-content:center;
     align-items:center;
+
     border-radius:50%;
+
+    background:#ff7200;
+
+    color:white;
+
     font-size:20px;
-    color:#fff;
-    margin-right:15px;
 }
 
-.text h3{
-    color:#00c6ff;
+/* TEXT */
+
+.info-text h3{
+
+    font-size:17px;
+
+    margin-bottom:5px;
 }
 
-.text p{
-    color:#fff;
+.info-text p{
+
+    color:#dddddd;
+
+    font-size:14px;
+
+    line-height:1.7;
+}
+
+/* SOCIALS */
+
+.socials{
+
+    display:flex;
+
+    gap:14px;
+
+    margin-top:20px;
+}
+
+.socials a{
+
+    width:45px;
+    height:45px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,0.08);
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:18px;
+
+    transition:0.3s ease;
+}
+
+.socials a:hover{
+
+    background:#ff7200;
+
+    transform:translateY(-3px);
+}
+
+/* RIGHT SIDE */
+
+.contact-form{
+
+    padding:50px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+
+    color:white;
+}
+
+/* FORM TITLE */
+
+.contact-form h2{
+
+    font-size:38px;
+
+    margin-bottom:10px;
+}
+
+.contact-form p{
+
+    color:#cccccc;
+
+    margin-bottom:30px;
+
     font-size:14px;
 }
 
-/* RIGHT SIDE FORM */
-.contactForm{
-    width:40%;
-    padding:30px;
-    background:rgba(255,255,255,0.1);
-    border-radius:10px;
-    backdrop-filter:blur(10px);
+/* INPUT GROUP */
+
+.input-group{
+
+    margin-bottom:22px;
 }
 
-.contactForm h2{
-    color:#fff;
-    margin-bottom:20px;
+/* LABEL */
+
+.input-group label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    color:#dddddd;
+
+    font-size:14px;
+
+    font-weight:500;
+}
+
+/* INPUT BOX */
+
+.input-box{
+
+    position:relative;
+}
+
+.input-box i{
+
+    position:absolute;
+
+    top:50%;
+    left:15px;
+
+    transform:translateY(-50%);
+
+    color:#ff7200;
+}
+
+.input-box textarea + i{
+
+    top:22px;
 }
 
 /* INPUT */
-.inputBox{
-    position:relative;
-    width:100%;
-    margin-top:10px;
-}
 
-.inputBox input,
-.inputBox textarea{
+.input-box input,
+.input-box textarea{
+
     width:100%;
-    padding:10px;
+
+    padding:15px 15px 15px 48px;
+
     border:none;
+
     outline:none;
-    background:rgba(255,255,255,0.2);
-    color:#fff;
-    border-radius:5px;
+
+    border-radius:16px;
+
+    background:rgba(255,255,255,0.08);
+
+    color:white;
+
+    font-size:14px;
+
+    border:1px solid transparent;
+
+    transition:0.3s ease;
 }
 
-.inputBox span{
-    position:absolute;
-    left:10px;
-    top:10px;
-    color:#ccc;
-    transition:0.3s;
-    pointer-events:none;
+.input-box textarea{
+
+    min-height:140px;
+
+    resize:none;
 }
 
-.inputBox input:focus ~ span,
-.inputBox textarea:focus ~ span,
-.inputBox input:valid ~ span,
-.inputBox textarea:valid ~ span{
-    top:-12px;
-    font-size:12px;
-    color:#00c6ff;
+/* FOCUS */
+
+.input-box input:focus,
+.input-box textarea:focus{
+
+    border-color:#ff7200;
+}
+
+/* PLACEHOLDER */
+
+input::placeholder,
+textarea::placeholder{
+
+    color:#aaaaaa;
 }
 
 /* BUTTON */
-.inputBox input[type="submit"]{
-    background:#00c6ff;
+
+.send-btn{
+
+    width:100%;
+
+    padding:16px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:
+    linear-gradient(
+    135deg,
+    #ff7200,
+    #ff9500
+    );
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:600;
+
     cursor:pointer;
-    font-size:16px;
-    margin-top:10px;
+
+    transition:0.3s ease;
 }
 
-.inputBox input[type="submit"]:hover{
-    background:#0099cc;
-}
+.send-btn:hover{
 
-/* HOME BUTTON */
-.home-btn{
-    display:inline-block;
-    margin-top:15px;
-    padding:10px 20px;
-    background:#ff7b00;
-    color:#fff;
-    text-decoration:none;
-    border-radius:5px;
-}
+    transform:translateY(-2px);
 
-.home-btn:hover{
-    background:#cc6300;
+    background:
+    linear-gradient(
+    135deg,
+    #ff8c1a,
+    #ff7200
+    );
 }
 
 /* RESPONSIVE */
-@media(max-width:900px){
-    .container{
-        flex-direction:column;
-    }
-    .contactInfo,
-    .contactForm{
-        width:100%;
+
+@media(max-width:1100px){
+
+    .contact-card{
+
+        grid-template-columns:1fr;
     }
 }
+
+@media(max-width:850px){
+
+    .navbar{
+
+        flex-direction:column;
+
+        gap:15px;
+    }
+
+    .menu{
+
+        justify-content:center;
+    }
+}
+
+@media(max-width:700px){
+
+    body{
+
+        padding:10px;
+    }
+
+    .contact-info,
+    .contact-form{
+
+        padding:28px 20px;
+    }
+
+    .contact-info h1{
+
+        font-size:34px;
+    }
+
+    .contact-form h2{
+
+        font-size:30px;
+    }
+
+    .menu{
+
+        gap:8px;
+    }
+
+    .menu a{
+
+        font-size:12px;
+
+        padding:10px 14px;
+    }
+
+    .logo{
+
+        font-size:28px;
+    }
+}
+
 </style>
 
 </head>
 
 <body>
 
-<section class="contact">
+<div class="contact-wrapper">
 
-<div>
-    <div class="content">
-        <h1>CONTACT US</h1>
-    </div>
+    <!-- NAVBAR -->
 
-    <div class="container">
+    <nav class="navbar">
+
+        <div class="logo">
+            Ca<span>Rs</span>
+        </div>
+
+        <div class="menu">
+
+            <a href="index.php">
+                <i class="fa-solid fa-house"></i>
+                Home
+            </a>
+
+            <a href="cars.php">
+                <i class="fa-solid fa-car"></i>
+                Explore Cars
+            </a>
+
+            <a href="services.html">
+                <i class="fa-solid fa-briefcase"></i>
+                Services
+            </a>
+
+            <a href="aboutus.html">
+                <i class="fa-solid fa-circle-info"></i>
+                About
+            </a>
+
+            <a href="#" class="active">
+                <i class="fa-solid fa-envelope"></i>
+                Contact
+            </a>
+
+        </div>
+
+    </nav>
+
+    <!-- CONTACT CARD -->
+
+    <div class="contact-card">
 
         <!-- LEFT -->
-        <div class="contactInfo">
 
-            <div class="box">
-                <div class="icon"><i class="fas fa-map-marker-alt"></i></div>
-                <div class="text">
+        <div class="contact-info">
+
+            <div class="tag">
+                CONTACT OUR TEAM
+            </div>
+
+            <h1>
+                Let's Talk <span>About Cars</span>
+            </h1>
+
+            <div class="line"></div>
+
+            <p class="description">
+
+                Have questions about our rental services,
+                premium vehicles, or booking process?
+
+                <br><br>
+
+                Our team is always ready to help you
+                enjoy a smooth and comfortable journey.
+
+            </p>
+
+            <!-- ADDRESS -->
+
+            <div class="info-box">
+
+                <div class="info-icon">
+
+                    <i class="fas fa-map-marker-alt"></i>
+
+                </div>
+
+                <div class="info-text">
+
                     <h3>Address</h3>
-                    <p>Cebu City, Philippines</p>
+
+                    <p>Sogod, Southern Leyte, Philippines</p>
+
                 </div>
+
             </div>
 
-            <div class="box">
-                <div class="icon"><i class="fas fa-phone-alt"></i></div>
-                <div class="text">
+            <!-- PHONE -->
+
+            <div class="info-box">
+
+                <div class="info-icon">
+
+                    <i class="fas fa-phone-alt"></i>
+
+                </div>
+
+                <div class="info-text">
+
                     <h3>Phone</h3>
+
                     <p>+63 912 345 6789</p>
+
                 </div>
+
             </div>
 
-            <div class="box">
-                <div class="icon"><i class="fas fa-envelope"></i></div>
-                <div class="text">
-                    <h3>Email</h3>
-                    <p>contact@cars.com</p>
+            <!-- EMAIL -->
+
+            <div class="info-box">
+
+                <div class="info-icon">
+
+                    <i class="fas fa-envelope"></i>
+
                 </div>
+
+                <div class="info-text">
+
+                    <h3>Email</h3>
+
+                    <p>contact@cars.com</p>
+
+                </div>
+
+            </div>
+
+            <!-- SOCIAL -->
+
+            <div class="socials">
+
+                <a href="#">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+
+                <a href="#">
+                    <i class="fab fa-twitter"></i>
+                </a>
+
+                <a href="#">
+                    <i class="fab fa-instagram"></i>
+                </a>
+
+                <a href="#">
+                    <i class="fab fa-github"></i>
+                </a>
+
             </div>
 
         </div>
 
         <!-- RIGHT -->
-        <div class="contactForm">
+
+        <div class="contact-form">
+
+            <h2>Send Message</h2>
+
+            <p>
+                Fill out the form and we will respond quickly.
+            </p>
+
             <form onsubmit="sendMsg(event)">
-                <h2>Send Message</h2>
 
-                <div class="inputBox">
-                    <input type="text" required>
-                    <span>Full Name</span>
+                <!-- NAME -->
+
+                <div class="input-group">
+
+                    <label>Full Name</label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-user"></i>
+
+                        <input type="text"
+                        placeholder="Enter your full name"
+                        required>
+
+                    </div>
+
                 </div>
 
-                <div class="inputBox">
-                    <input type="email" required>
-                    <span>Email</span>
+                <!-- EMAIL -->
+
+                <div class="input-group">
+
+                    <label>Email Address</label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-envelope"></i>
+
+                        <input type="email"
+                        placeholder="Enter your email"
+                        required>
+
+                    </div>
+
                 </div>
 
-                <div class="inputBox">
-                    <textarea required></textarea>
-                    <span>Your Message</span>
+                <!-- MESSAGE -->
+
+                <div class="input-group">
+
+                    <label>Your Message</label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-comment"></i>
+
+                        <textarea
+                        placeholder="Write your message..."
+                        required></textarea>
+
+                    </div>
+
                 </div>
 
-                <div class="inputBox">
-                    <input type="submit" value="Send">
-                </div>
+                <!-- BUTTON -->
 
-                <a href="index.php" class="home-btn">Go To Home</a>
+                <button type="submit"
+                class="send-btn">
+
+                    <i class="fa-solid fa-paper-plane"></i>
+
+                    Send Message
+
+                </button>
+
             </form>
+
         </div>
 
     </div>
+
 </div>
 
-</section>
-
 <script>
+
 function sendMsg(e){
+
     e.preventDefault();
-    alert("Message sent! (Frontend only)");
+
+    alert("Message Sent Successfully!");
 }
+
 </script>
 
 </body>
+
 </html>

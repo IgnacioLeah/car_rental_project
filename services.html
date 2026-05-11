@@ -1,138 +1,666 @@
 <!DOCTYPE html>
-
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta http-equiv="X-UA-Compatible"
+content="IE=edge">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
 <title>CaRs | Services</title>
 
-<script src="https://kit.fontawesome.com/dbed6b6114.js" crossorigin="anonymous"></script>
+<!-- GOOGLE FONT -->
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<!-- FONT AWESOME -->
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
 }
+
+/* BODY */
 
 body{
-    font-family:'Playfair Display', serif;
+
     min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background: linear-gradient(43deg,#4158D0,#C850C0,#FFCC70);
+
+    background:
+    linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.82)),
+    url("images/carbg2.jpg");
+
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+
+    padding:18px;
+
+    overflow-x:hidden;
 }
 
-/* ✅ FIXED CARD */
-section{
-    display:flex;
-    width:900px;
-    height:500px;
-    border-radius:12px;
-    overflow:hidden;
-    box-shadow:0 10px 30px rgba(0,0,0,0.4);
-}
+/* WRAPPER */
 
-/* CONTENT FULL WIDTH */
-.content{
-    background:#12192c;
-    color:#fff;
+.services-wrapper{
+
     width:100%;
+    max-width:1350px;
+
+    margin:auto;
+}
+
+/* NAVBAR */
+
+.navbar{
+
+    width:100%;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:14px 30px;
+
+    background:rgba(10,10,10,0.82);
+
+    backdrop-filter:blur(12px);
+
+    border-radius:20px;
+
+    margin-bottom:22px;
+
+    border:1px solid rgba(255,255,255,0.05);
+}
+
+/* LOGO */
+
+.logo{
+
+    color:#ff7200;
+
+    font-size:34px;
+
+    font-weight:700;
+}
+
+.logo span{
+
+    color:white;
+}
+
+/* MENU */
+
+.menu{
+
+    display:flex;
+    align-items:center;
+
+    gap:14px;
+
+    flex-wrap:wrap;
+}
+
+.menu a{
+
+    text-decoration:none;
+
+    color:#d9d9d9;
+
+    font-size:14px;
+
+    font-weight:500;
+
+    padding:12px 18px;
+
+    border-radius:14px;
+
+    transition:0.3s ease;
+
+    display:flex;
+    align-items:center;
+
+    gap:8px;
+}
+
+.menu a:hover,
+.menu a.active{
+
+    background:#161616;
+
+    color:#ff7200;
+}
+
+/* SERVICES CARD */
+
+.services-card{
+
+    width:100%;
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    background:
+    linear-gradient(
+    180deg,
+    rgba(255,255,255,0.10),
+    rgba(255,255,255,0.04)
+    );
+
+    backdrop-filter:blur(12px);
+
+    border-radius:28px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(255,255,255,0.05);
+
+    box-shadow:
+    0 15px 35px rgba(0,0,0,0.35);
+}
+
+/* IMAGE */
+
+.services-image{
+
+    position:relative;
+
+    min-height:650px;
+}
+
+.services-image img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+}
+
+/* OVERLAY */
+
+.overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+    linear-gradient(
+    to top,
+    rgba(0,0,0,0.75),
+    rgba(0,0,0,0.15)
+    );
+}
+
+/* BADGE */
+
+.badge{
+
+    position:absolute;
+
+    top:24px;
+    left:24px;
+
+    background:rgba(255,114,0,0.15);
+
+    border:1px solid rgba(255,114,0,0.25);
+
+    color:#ff7200;
+
+    padding:12px 20px;
+
+    border-radius:50px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    backdrop-filter:blur(10px);
+}
+
+/* CONTENT */
+
+.services-content{
+
+    padding:45px;
+
+    color:white;
+
     display:flex;
     flex-direction:column;
     justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding:30px;
 }
 
-.content h2{
-    font-size:32px;
-    letter-spacing:4px;
+/* TAG */
+
+.tag{
+
+    color:#ff7200;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    letter-spacing:3px;
+
+    margin-bottom:16px;
 }
 
-.content span{
-    width:80px;
-    height:2px;
-    background:#C850C0;
-    margin:15px 0;
+/* TITLE */
+
+.services-content h1{
+
+    font-size:52px;
+
+    line-height:1.2;
+
+    margin-bottom:18px;
 }
 
-.service{
-    width:80%;
-    padding:12px;
-    margin:10px 0;
-    border:1px solid #4158D0;
-    border-radius:5px;
+.services-content h1 span{
+
+    color:#ff7200;
+}
+
+/* LINE */
+
+.line{
+
+    width:90px;
+    height:4px;
+
+    background:#ff7200;
+
+    border-radius:10px;
+
+    margin-bottom:24px;
+}
+
+/* DESCRIPTION */
+
+.description{
+
+    color:#dddddd;
+
+    font-size:15px;
+
+    line-height:1.9;
+
+    margin-bottom:30px;
+}
+
+/* SERVICES GRID */
+
+.services-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:18px;
+}
+
+/* SERVICE CARD */
+
+.service-card{
+
+    background:rgba(255,255,255,0.08);
+
+    border-radius:18px;
+
+    padding:22px;
+
+    transition:0.3s ease;
+}
+
+.service-card:hover{
+
+    transform:translateY(-4px);
+
+    background:rgba(255,255,255,0.12);
+}
+
+.service-card i{
+
+    font-size:24px;
+
+    color:#ff7200;
+
+    margin-bottom:12px;
+}
+
+.service-card h3{
+
+    font-size:18px;
+
+    margin-bottom:8px;
+}
+
+.service-card p{
+
+    font-size:13px;
+
+    color:#cccccc;
+
+    line-height:1.7;
+}
+
+/* SOCIAL */
+
+.socials{
+
     display:flex;
+
+    gap:14px;
+
+    margin-top:30px;
+}
+
+.socials a{
+
+    width:46px;
+    height:46px;
+
+    display:flex;
+    justify-content:center;
     align-items:center;
-    gap:10px;
-}
 
-.service i{
-    color:#C850C0;
-}
+    border-radius:50%;
 
-/* BUTTON */
-.home-btn{
-    margin-top:20px;
-    padding:10px 20px;
-    border:2px solid #4158D0;
-    color:#fff;
+    background:rgba(255,255,255,0.08);
+
+    color:white;
+
     text-decoration:none;
-    border-radius:5px;
-    transition:0.3s;
+
+    font-size:18px;
+
+    transition:0.3s ease;
 }
 
-.home-btn:hover{
-    background:#C850C0;
+.socials a:hover{
+
+    background:#ff7200;
+
+    transform:translateY(-3px);
 }
 
-/* MOBILE */
-@media(max-width:900px){
-    section{
-        width:90%;
-        height:auto;
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+    .services-card{
+
+        grid-template-columns:1fr;
+    }
+
+    .services-image{
+
+        height:380px;
+
+        min-height:auto;
+    }
+
+    .services-content h1{
+
+        font-size:40px;
     }
 }
+
+@media(max-width:850px){
+
+    .navbar{
+
+        flex-direction:column;
+
+        gap:15px;
+    }
+
+    .menu{
+
+        justify-content:center;
+    }
+}
+
+@media(max-width:700px){
+
+    body{
+
+        padding:10px;
+    }
+
+    .services-content{
+
+        padding:28px 20px;
+    }
+
+    .services-content h1{
+
+        font-size:30px;
+    }
+
+    .description{
+
+        font-size:14px;
+    }
+
+    .services-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .menu{
+
+        gap:8px;
+    }
+
+    .menu a{
+
+        font-size:12px;
+
+        padding:10px 14px;
+    }
+
+    .logo{
+
+        font-size:28px;
+    }
+}
+
 </style>
 
 </head>
 
 <body>
 
-<section>
+<div class="services-wrapper">
 
-<div class="content">
-    <h2>Our Services</h2>
-    <span></span>
+    <!-- NAVBAR -->
 
-<div class="service">
-    <i class="fa fa-car"></i>
-    <p>Car Sales – Wide range of vehicles</p>
-</div>
+    <nav class="navbar">
 
-<div class="service">
-    <i class="fa fa-wrench"></i>
-    <p>Maintenance – Professional servicing</p>
-</div>
+        <div class="logo">
+            Ca<span>Rs</span>
+        </div>
 
-<div class="service">
-    <i class="fa fa-road"></i>
-    <p>Test Drive – Experience before buying</p>
-</div>
-<div>
-    <br><a href="index.php" class="home-btn">Home</a>
-    <a href="aboutus.html" class="home-btn">About Us</a>
-    <a href="services.html" class="home-btn">Service</a>
-    <a href="contactus.html" class="home-btn">Contact</a>
-</div>
-</div>
+        <div class="menu">
 
-</section>
+            <a href="index.php">
+                <i class="fa-solid fa-house"></i>
+                Home
+            </a>
+
+            <a href="cars.php">
+                <i class="fa-solid fa-car"></i>
+                Explore Cars
+            </a>
+
+            <a href="#" class="active">
+                <i class="fa-solid fa-briefcase"></i>
+                Services
+            </a>
+
+            <a href="aboutus.html">
+                <i class="fa-solid fa-circle-info"></i>
+                About
+            </a>
+
+            <a href="contactus.html">
+                <i class="fa-solid fa-envelope"></i>
+                Contact
+            </a>
+
+        </div>
+
+    </nav>
+
+    <!-- SERVICES CARD -->
+
+    <div class="services-card">
+
+        <!-- IMAGE -->
+
+        <div class="services-image">
+
+            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1600&auto=format&fit=crop">
+
+            <div class="overlay"></div>
+
+            <div class="badge">
+                Premium Services
+            </div>
+
+        </div>
+
+        <!-- CONTENT -->
+
+        <div class="services-content">
+
+            <div class="tag">
+                OUR SERVICES
+            </div>
+
+            <h1>
+                Premium <span>Car Services</span> For Every Journey
+            </h1>
+
+            <div class="line"></div>
+
+            <p class="description">
+
+                CaRs offers high-quality services designed
+                to provide comfort, convenience, and reliability.
+
+                <br><br>
+
+                From premium rentals to professional maintenance,
+                we ensure the best driving experience for every customer.
+
+            </p>
+
+            <!-- SERVICES -->
+
+            <div class="services-grid">
+
+                <div class="service-card">
+
+                    <i class="fa-solid fa-car"></i>
+
+                    <h3>Car Rentals</h3>
+
+                    <p>
+                        Premium and luxury vehicles available
+                        for business trips, vacations, and daily use.
+                    </p>
+
+                </div>
+
+                <div class="service-card">
+
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+
+                    <h3>Maintenance</h3>
+
+                    <p>
+                        Professional car servicing and maintenance
+                        with trusted technicians.
+                    </p>
+
+                </div>
+
+                <div class="service-card">
+
+                    <i class="fa-solid fa-road"></i>
+
+                    <h3>Test Drive</h3>
+
+                    <p>
+                        Experience the performance and comfort
+                        of our vehicles before renting.
+                    </p>
+
+                </div>
+
+                <div class="service-card">
+
+                    <i class="fa-solid fa-headset"></i>
+
+                    <h3>24/7 Support</h3>
+
+                    <p>
+                        Friendly customer support ready
+                        to assist anytime you need help.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- SOCIAL -->
+
+            <div class="socials">
+
+                <a href="#">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+
+                <a href="#">
+                    <i class="fab fa-twitter"></i>
+                </a>
+
+                <a href="#">
+                    <i class="fab fa-instagram"></i>
+                </a>
+
+                <a href="#">
+                    <i class="fab fa-github"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
+
 </html>
